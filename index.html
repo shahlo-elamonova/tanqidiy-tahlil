@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axborotni tanqidiy tahlil qilish — Magistrlik dissertatsiyasi</title>
+<style>
+:root{
+  --ink:#1A2332;--paper:#EAF2FB;--paper-2:#E0EBF7;--paper-3:#D5E3F2;
+  --accent:#1A73E8;--accent-deep:#1557B0;--accent-light:rgba(26,115,232,0.08);
+  --accent2:#4F46E5;--green:#16A34A;--green-deep:#15803d;
+  --red:#DC2626;--amber:#D97706;--amber-deep:#B45309;
+  --sky:#3B82F6;--sky-deep:#2563EB;
+  --line:rgba(26,115,232,0.12);--surface:#FFFFFF;--surface2:#F5F8FC;
+  --shadow:rgba(26,115,232,0.08);--shadow-lg:rgba(26,115,232,0.14);--shadow-xl:rgba(26,115,232,0.22);
+  --text2:#5B6A80;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:linear-gradient(150deg,var(--paper) 0%,#DCE8F7 40%,#F0F6FF 100%);line-height:1.65;overflow-x:hidden;min-height:100vh}
+h1,h2,h3,h4{font-family:Georgia,serif;letter-spacing:-.01em}
+header.nav{position:sticky;top:0;z-index:60;background:rgba(234,242,251,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);transition:.3s}
+header.nav.scrolled{box-shadow:0 4px 20px var(--shadow)}
+.nav-inner{max-width:1160px;margin:0 auto;padding:.7rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:bold;font-size:1.02rem}
+.brand .mark svg{width:38px;height:38px}
+.nav-links{display:flex;gap:.2rem;flex-wrap:wrap}
+.nav-links a{font-family:'Segoe UI',sans-serif;font-size:.95rem;text-decoration:none;color:var(--ink);padding:.5rem .85rem;border-radius:8px;transition:.18s;font-weight:600}
+.nav-links a:hover{background:var(--accent-light);color:var(--accent-deep)}
+.nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;padding:.4rem .6rem;font-size:1rem;cursor:pointer}
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#1A4A7A 0%,#2563EB 50%,#3B82F6 100%);background-size:200% 200%;animation:gradShift 18s ease infinite}
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none;z-index:1}
+.hero-orb.o1{width:120px;height:120px;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%);top:8%;right:14%;animation:float 9s ease-in-out infinite}
+.hero-orb.o2{width:90px;height:90px;background:radial-gradient(circle,rgba(79,70,229,.2),transparent 70%);bottom:16%;left:8%;animation:float 11s ease-in-out infinite 1s}
+.hero-orb.o3{width:60px;height:60px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);top:30%;left:20%;animation:float 7s ease-in-out infinite .5s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hero-inner{position:relative;z-index:2;max-width:1160px;margin:0 auto;padding:4.5rem 1.4rem 4rem;color:#fff}
+.hero-inner>div>*{opacity:0;animation:riseIn .8s cubic-bezier(.2,.7,.3,1) forwards}
+.hero-inner>div>*:nth-child(1){animation-delay:.1s}.hero-inner>div>*:nth-child(2){animation-delay:.24s}.hero-inner>div>*:nth-child(3){animation-delay:.38s}.hero-inner>div>*:nth-child(4){animation-delay:.52s}.hero-inner>div>*:nth-child(5){animation-delay:.66s}.hero-inner>div>*:nth-child(6){animation-delay:.8s}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.eyebrow{font-family:'Segoe UI',sans-serif;font-size:.74rem;font-weight:bold;letter-spacing:.16em;text-transform:uppercase;color:#93C5FD;display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.1rem;background:rgba(255,255,255,.1);padding:.4rem .8rem;border-radius:30px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:#60A5FA;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.hero h1{font-size:3rem;line-height:1.1;margin-bottom:1.2rem;color:#fff}
+.hero h1 em{font-style:normal;position:relative;white-space:nowrap}
+.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:.08em;height:.36em;background:rgba(96,165,250,.4);z-index:-1;border-radius:3px}
+.hero p.lead{font-size:1.12rem;color:#BFDBFE;max-width:52ch;margin-bottom:1rem}
+.author-line{font-family:'Segoe UI',sans-serif;font-size:.95rem;color:#DBEAFE;margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem}
+.author-line .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#60A5FA,#4F46E5);color:#fff;display:grid;place-items:center;font-weight:bold;font-size:.85rem;flex:none;box-shadow:0 3px 10px rgba(79,70,229,.4)}
+.author-line strong{color:#fff}
+.hero-cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.4rem}
+.btn{font-family:'Segoe UI',sans-serif;font-size:.9rem;font-weight:bold;text-decoration:none;border-radius:11px;padding:.8rem 1.4rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;border:none;transition:.2s}
+.btn-primary{background:#fff;color:var(--accent-deep);box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.btn-primary:hover{background:#F0F6FF;transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
+.btn-ghost:hover{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.5)}
+.stats{background:linear-gradient(135deg,var(--accent-deep),var(--accent2));color:#fff}
+.stats-inner{max-width:1160px;margin:0 auto;padding:1.7rem 1.4rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.stat{text-align:center}.stat .num{font-size:2.1rem;font-weight:bold;color:#93C5FD}
+.stat .lbl{font-family:'Segoe UI',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;opacity:.85;margin-top:.2rem}
+section.block{max-width:1160px;margin:0 auto;padding:4rem 1.4rem;scroll-margin-top:72px}
+.sec-head{margin-bottom:2.2rem;max-width:62ch}.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.sec-kicker{font-family:'Segoe UI',sans-serif;font-size:.74rem;font-weight:bold;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem;display:inline-flex;align-items:center;gap:.5rem}
+.sec-kicker::before{content:'';width:22px;height:2px;background:var(--accent);display:inline-block}
+.sec-head.center .sec-kicker::before{display:none}
+.sec-head h2{font-size:2.2rem;line-height:1.14;margin-bottom:.7rem}.sec-head p{color:var(--text2);font-size:1.02rem}
+.model-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:2.4rem;align-items:center}
+.model-illus svg{width:100%;height:auto}
+.model-cards{display:flex;flex-direction:column;gap:.7rem}
+.mcard{display:flex;gap:1rem;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:1rem 1.2rem;transition:.22s;position:relative;overflow:hidden;box-shadow:0 1px 4px var(--shadow);cursor:pointer}
+.mcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.mcard:hover{transform:translateX(6px);box-shadow:0 8px 22px var(--shadow-lg)}
+.mcard.m1::before{background:var(--accent-deep)}.mcard.m2::before{background:var(--accent)}.mcard.m3::before{background:var(--accent2)}.mcard.m4::before{background:var(--amber)}
+.mcard.active{border-color:var(--accent);box-shadow:0 8px 22px var(--shadow-lg)}
+.mcard .ic{width:44px;height:44px;flex:none;border-radius:11px;display:grid;place-items:center}
+.mcard.m1 .ic{background:rgba(26,115,232,.1);color:var(--accent-deep)}.mcard.m2 .ic{background:rgba(59,130,246,.1);color:var(--accent)}.mcard.m3 .ic{background:rgba(79,70,229,.1);color:var(--accent2)}.mcard.m4 .ic{background:rgba(217,119,6,.1);color:var(--amber)}
+.mcard .ic svg{width:24px;height:24px}.mcard h4{font-size:1.02rem;margin-bottom:.15rem}.mcard p{font-size:.85rem;color:var(--text2)}
+.detail-panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.6rem;margin-top:1rem;display:none;animation:fadeUp .4s;box-shadow:0 8px 24px var(--shadow-lg)}
+.detail-panel.show{display:block}.detail-panel h3{font-size:1.2rem;color:var(--accent-deep);margin-bottom:.5rem}.detail-panel p{font-size:.95rem;line-height:1.7;color:#3A4D63;margin-bottom:.6rem}
+.detail-panel ul{list-style:none;padding:0}.detail-panel li{padding:.45rem 0 .45rem 1.3rem;font-family:'Segoe UI',sans-serif;font-size:.9rem;position:relative;border-bottom:1px solid var(--paper-2);color:#3A4D63}
+.detail-panel li::before{content:'●';position:absolute;left:0;color:var(--accent);font-size:.55rem;top:.7rem}
+.levels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:1rem}
+.lvl-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.4rem;text-align:center;transition:.22s;position:relative;overflow:hidden;box-shadow:0 1px 4px var(--shadow);cursor:pointer}
+.lvl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.lvl-card.past::before{background:var(--red)}.lvl-card.orta::before{background:var(--amber)}.lvl-card.yuqori::before{background:var(--green)}
+.lvl-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px var(--shadow-lg)}
+.lvl-card.active{border-color:var(--accent);box-shadow:0 10px 24px var(--shadow-lg)}
+.lvl-card h4{font-size:1.15rem;margin-bottom:.5rem}.lvl-card p{font-size:.9rem;color:var(--text2);line-height:1.6}
+.lvl-ic{width:52px;height:52px;margin:0 auto .8rem;border-radius:50%;display:grid;place-items:center;font-size:1.5rem;font-weight:bold;color:#fff}
+.lvl-card.past .lvl-ic{background:linear-gradient(135deg,var(--red),#B91C1C)}.lvl-card.orta .lvl-ic{background:linear-gradient(135deg,var(--amber),var(--amber-deep))}.lvl-card.yuqori .lvl-ic{background:linear-gradient(135deg,var(--green),var(--green-deep))}
+.topic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:1rem}
+.topic-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.3rem;transition:.22s;cursor:pointer;box-shadow:0 2px 8px var(--shadow)}
+.topic-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px var(--shadow-lg);border-color:var(--accent)}
+.topic-card.active{border-color:var(--accent);box-shadow:0 10px 24px var(--shadow-lg)}
+.topic-card h4{font-size:1rem;margin-bottom:.4rem;color:var(--accent-deep)}.topic-card p{font-size:.85rem;color:var(--text2);line-height:1.5}
+.topic-tag{font-family:'Segoe UI',sans-serif;font-size:.7rem;font-weight:bold;padding:.25rem .6rem;border-radius:20px;display:inline-block;margin-top:.6rem}
+.topic-tag.tt1{background:rgba(26,115,232,.1);color:var(--accent-deep)}.topic-tag.tt2{background:rgba(79,70,229,.1);color:var(--accent2)}.topic-tag.tt3{background:rgba(22,163,74,.1);color:var(--green-deep)}
+.quiz-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:2rem;max-width:720px;margin:0 auto;box-shadow:0 10px 30px var(--shadow-lg)}
+.quiz-bar{height:5px;background:var(--paper-2);border-radius:3px;margin-bottom:1.2rem;overflow:hidden}
+.quiz-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .4s}
+.quiz-count{font-family:'Segoe UI',sans-serif;font-size:.8rem;color:var(--text2);margin-bottom:.6rem}
+.quiz-q{font-size:1.15rem;font-weight:bold;margin-bottom:1.2rem;line-height:1.4}
+.qopt{display:flex;align-items:center;gap:.7rem;padding:.8rem 1rem;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-family:'Segoe UI',sans-serif;font-size:.95rem;transition:.18s;background:var(--surface);margin-bottom:.5rem}
+.qopt:hover{border-color:var(--accent);background:var(--accent-light)}
+.qopt .letter{width:32px;height:32px;border-radius:8px;background:var(--paper-2);display:grid;place-items:center;font-weight:bold;font-size:.85rem;color:var(--accent-deep);flex:none}
+.qopt.correct{border-color:var(--green);background:rgba(22,163,74,.08)}.qopt.correct .letter{background:var(--green);color:#fff}
+.qopt.wrong{border-color:var(--red);background:rgba(220,38,38,.06)}.qopt.wrong .letter{background:var(--red);color:#fff}
+.qopt.disabled{pointer-events:none;opacity:.7}
+.quiz-feedback{font-size:.92rem;margin-top:.8rem;padding:.7rem 1rem;border-radius:10px;line-height:1.5}
+.quiz-feedback.ok{background:rgba(22,163,74,.08);color:var(--green-deep)}.quiz-feedback.no{background:rgba(220,38,38,.06);color:#B91C1C}
+.quiz-result{text-align:center;padding:1.5rem 0}.quiz-result p{font-size:1.05rem;margin:.8rem 0 1.2rem;color:var(--text2)}
+.rring{position:relative;display:inline-block}.rbig{position:absolute;inset:0;display:grid;place-items:center;font-size:2rem;font-weight:bold;color:var(--accent-deep)}
+.svc-cta-wrap{max-width:1160px;margin:0 auto;padding:3.5rem 1.4rem}
+.svc-cta{background:linear-gradient(135deg,var(--accent),var(--accent-deep) 60%,#0F4A8A);border-radius:24px;padding:2.4rem;display:flex;align-items:center;gap:1.8rem;color:#fff;box-shadow:0 20px 44px rgba(26,115,232,.3);position:relative;overflow:hidden;flex-wrap:wrap}
+.svc-cta::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%)}
+.svc-cta-body{flex:1;min-width:250px;position:relative;z-index:2}.svc-cta-body h2{font-size:1.6rem;margin-bottom:.4rem;color:#fff}.svc-cta-body p{font-size:.96rem;color:rgba(255,255,255,.9);line-height:1.55}
+.svc-cta-ic{flex:none;position:relative;z-index:2}.svc-cta-ic svg{width:64px;height:64px}
+.btn-cta{background:#fff;color:var(--accent-deep);font-family:'Segoe UI',sans-serif;font-weight:bold;font-size:.95rem;padding:.9rem 1.6rem;border-radius:12px;text-decoration:none;white-space:nowrap;position:relative;z-index:2;transition:.2s;box-shadow:0 6px 16px rgba(0,0,0,.15)}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.22)}
+footer{background:#1A2332;color:#B0C4DE}
+.foot-inner{max-width:1160px;margin:0 auto;padding:2.5rem 1.4rem 2rem;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:2rem}
+footer h4{color:#fff;font-size:1.05rem;margin-bottom:.7rem}footer p{font-size:.88rem;line-height:1.7;color:#8BA4C0}
+footer a{color:#60A5FA;text-decoration:none;font-family:'Segoe UI',sans-serif;font-size:.86rem;display:block;padding:.16rem 0;transition:.15s}footer a:hover{color:#fff;padding-left:.3rem}
+.foot-author{margin-top:1rem;padding:.9rem 1rem;background:rgba(255,255,255,.05);border-radius:10px;border-left:3px solid #60A5FA}.foot-author strong{color:#fff}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.1);text-align:center;padding:1.2rem;font-size:.8rem;color:#5B6A80;font-family:'Segoe UI',sans-serif}
+.reveal{opacity:0;transform:translateY(26px);transition:.7s cubic-bezier(.2,.7,.3,1)}.reveal.on{opacity:1;transform:none}.reveal-d1{transition-delay:.08s}.reveal-d2{transition-delay:.16s}
+@media(max-width:960px){.model-layout{grid-template-columns:1fr}.model-illus{max-width:340px;margin:0 auto}.levels-grid,.topic-grid{grid-template-columns:repeat(2,1fr)}.stats-inner{grid-template-columns:repeat(2,1fr)}.foot-inner{grid-template-columns:1fr}}
+@media(max-width:600px){.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);flex-direction:column;padding:.6rem 1.4rem 1rem;border-bottom:1px solid var(--line);box-shadow:0 8px 20px var(--shadow)}.nav-links.open{display:flex}.nav-toggle{display:block}.hero h1{font-size:1.9rem}.sec-head h2{font-size:1.7rem}.levels-grid,.topic-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="nav" id="nav"><div class="nav-inner">
+  <div class="brand"><span class="mark"><svg viewBox="0 0 40 40" fill="none"><rect x="2" y="2" width="36" height="36" rx="10" fill="#1A73E8"/><circle cx="20" cy="16" r="8" fill="none" stroke="#93C5FD" stroke-width="2.2"/><line x1="25" y1="22" x2="31" y2="28" stroke="#93C5FD" stroke-width="3" stroke-linecap="round"/><path d="M11 32h18" stroke="#60A5FA" stroke-width="2.2" stroke-linecap="round"/></svg></span><span>Tanqidiy tahlil</span></div>
+  <button class="nav-toggle" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
+  <nav class="nav-links" id="navlinks"><a href="#model">Model</a><a href="#levels">Darajalar</a><a href="#topics">Fan mavzulari</a><a href="#quiz">Test</a><a href="xizmatlar.html" style="background:var(--accent);color:#fff;border-radius:8px">✦ Interaktiv xizmatlar</a></nav>
+</div></header>
+
+<section class="hero">
+  <div class="hero-orb o1"></div><div class="hero-orb o2"></div><div class="hero-orb o3"></div>
+  <svg style="position:absolute;inset:0;pointer-events:none;opacity:.9;width:100%;height:100%" viewBox="0 0 1440 700" preserveAspectRatio="xMidYMid slice"><circle cx="1240" cy="120" r="180" fill="#fff" opacity="0.05"/><circle cx="150" cy="600" r="220" fill="#4F46E5" opacity="0.08"/><circle cx="1350" cy="560" r="90" fill="#60A5FA" opacity="0.1"/><path d="M0 640 Q360 590 720 630 T1440 610" stroke="#fff" stroke-width="2" fill="none" opacity="0.08"/></svg>
+  <div class="hero-inner"><div>
+    <span class="eyebrow"><span class="dot"></span>60110400 — Boshlang'ich ta'lim</span>
+    <h1>Bo'lajak o'qituvchilarda axborotni <em>tanqidiy tahlil</em> qilish ko'nikmasini rivojlantirish</h1>
+    <p class="lead">«Uzluksiz ta'limdagi tendensiyalar va zamonaviy yondashuvlar» fani misolida ishlab chiqilgan pedagogik model, metodik ta'minot va tajriba-sinov ishlarining amaliy raqamli platformasi.</p>
+    <div class="author-line"><span class="av">SH</span> <strong>Elamonova Shahlo Ilyos qizi</strong> · Magistrant</div>
+    <div class="author-line" style="margin-bottom:0"><span class="av" style="background:linear-gradient(135deg,#4F46E5,#2563EB);font-size:.7rem">ZCH</span> <strong>Ilmiy rahbar:</strong>&nbsp; p.f.f.d. (PhD) Z.Choriyeva</div>
+    <div class="hero-cta"><a href="#model" class="btn btn-primary">Pedagogik model ↓</a><a href="xizmatlar.html" class="btn btn-ghost">✦ Interaktiv xizmatlar</a></div>
+  </div></div>
+</section>
+
+<section class="stats"><div class="stats-inner">
+  <div class="stat"><div class="num" data-count="4">0</div><div class="lbl">Model komponenti</div></div>
+  <div class="stat"><div class="num" data-count="3">0</div><div class="lbl">Ko'nikma darajasi</div></div>
+  <div class="stat"><div class="num" data-count="7">0</div><div class="lbl">Interaktiv xizmat</div></div>
+  <div class="stat"><div class="num" data-count="10">0</div><div class="lbl">Diagnostik savol</div></div>
+</div></section>
+
+<section class="block reveal" id="model">
+  <div class="sec-head"><span class="sec-kicker">Nazariy asos</span><h2>To'rt komponentli pedagogik model</h2><p>Axborotni tanqidiy tahlil qilish ko'nikmasini rivojlantirish motivatsion komponentdan boshlanib, refleksiv-baholovchi komponentda yakunlanadi va tsiklik ravishda takrorlanadi.</p></div>
+  <div class="model-layout">
+    <div class="model-illus"><svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+      <path d="M270 55 C298 120 298 270 270 345" stroke="#60A5FA" stroke-width="2.5" fill="none" stroke-dasharray="6 5"/><path d="M270 345 l-6 -4 m6 4 l-4 -6" stroke="#60A5FA" stroke-width="2.5" fill="none" stroke-linecap="round"/><text x="292" y="200" font-family="Segoe UI,sans-serif" font-size="10" fill="#60A5FA" transform="rotate(90 292 200)">tsiklik takror</text>
+      <rect x="40" y="30" width="200" height="56" rx="14" fill="#1557B0"/><text x="140" y="55" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#fff" font-weight="bold">Motivatsion</text><text x="140" y="72" text-anchor="middle" font-size="10" fill="#93C5FD">axborotga ishonchsizlik hissi</text>
+      <path d="M140 86 l0 16 m-5 -7 l5 7 5 -7" stroke="#B0C4DE" stroke-width="2" fill="none"/>
+      <rect x="40" y="112" width="200" height="56" rx="14" fill="#1A73E8"/><text x="140" y="137" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#fff" font-weight="bold">Mazmuniy-bilim</text><text x="140" y="154" text-anchor="middle" font-size="10" fill="#BFDBFE">manba, dalil, mantiqiy xato</text>
+      <path d="M140 168 l0 16 m-5 -7 l5 7 5 -7" stroke="#B0C4DE" stroke-width="2" fill="none"/>
+      <rect x="40" y="194" width="200" height="56" rx="14" fill="#4F46E5"/><text x="140" y="219" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#fff" font-weight="bold">Faoliyat-amaliy</text><text x="140" y="236" text-anchor="middle" font-size="10" fill="#C7D2FE">qiyoslash, dalillash mashqlari</text>
+      <path d="M140 250 l0 16 m-5 -7 l5 7 5 -7" stroke="#B0C4DE" stroke-width="2" fill="none"/>
+      <rect x="40" y="276" width="200" height="56" rx="14" fill="#D97706"/><text x="140" y="301" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#fff" font-weight="bold">Refleksiv-baholovchi</text><text x="140" y="318" text-anchor="middle" font-size="10" fill="#FEF3C7">o'z xulosasini qayta ko'rish</text>
+      <rect x="55" y="354" width="170" height="30" rx="15" fill="none" stroke="#60A5FA" stroke-width="2" stroke-dasharray="4 3"/><text x="140" y="374" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" fill="#1A73E8" font-weight="bold">Tanqidiy fikrlovchi o'qituvchi</text>
+    </svg></div>
+    <div class="model-cards">
+      <div class="mcard m1" onclick="showModel(0)"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div><div><h4>1 · Motivatsion komponent</h4><p>Talabada axborotga tanqidiy munosabat ehtiyojini shakllantirish.</p></div></div>
+      <div class="mcard m2" onclick="showModel(1)"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h10"/></svg></div><div><h4>2 · Mazmuniy-bilim komponenti</h4><p>Manba turlari, dalil va fikr farqi, mantiqiy xatolar, statistik savodxonlik.</p></div></div>
+      <div class="mcard m3" onclick="showModel(2)"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4-9 4-9-4 9-4z"/><path d="M3 12l9 4 9-4"/></svg></div><div><h4>3 · Faoliyat-amaliy komponent</h4><p>Manbani qiyoslash, dalillarni tekshirish, mantiqiy xatolarni topish mashqlari.</p></div></div>
+      <div class="mcard m4" onclick="showModel(3)"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg></div><div><h4>4 · Refleksiv-baholovchi komponent</h4><p>O'z xulosasini qayta ko'rib chiqish va o'z-o'zini baholash.</p></div></div>
+    </div>
+  </div>
+  <div class="detail-panel" id="modelDetail"></div>
+</section>
+
+<section class="block reveal" id="levels">
+  <div class="sec-head center"><span class="sec-kicker">Diagnostika mezonlari</span><h2>Tanqidiy tahlil ko'nikmasining uch darajasi</h2><p>Tajriba-sinov ishida talabalar quyidagi uch daraja bo'yicha baholanadi.</p></div>
+  <div class="levels-grid">
+    <div class="lvl-card past reveal" onclick="showLevel(0)"><div class="lvl-ic">I</div><h4>Past daraja</h4><p>Axborotni manbasini tekshirmasdan qabul qiladi, dalil va fikrni farqlay olmaydi.</p></div>
+    <div class="lvl-card orta reveal reveal-d1" onclick="showLevel(1)"><div class="lvl-ic">II</div><h4>O'rta daraja</h4><p>Manbani qisman tekshiradi, lekin xulosani mustaqil asoslashda qiynaladi.</p></div>
+    <div class="lvl-card yuqori reveal reveal-d2" onclick="showLevel(2)"><div class="lvl-ic">III</div><h4>Yuqori daraja</h4><p>Manbalarni mustaqil qiyoslaydi, dalillarni tanqidiy baholaydi va asoslangan xulosa chiqaradi.</p></div>
+  </div>
+  <div class="detail-panel" id="levelDetail"></div>
+</section>
+
+<section class="block reveal" id="topics">
+  <div class="sec-head"><span class="sec-kicker">Fan mazmuni</span><h2>«Uzluksiz ta'limdagi tendensiyalar va zamonaviy yondashuvlar» fani mavzulari</h2><p>Fan mavzulari doirasida tanqidiy tahlil ko'nikmasi rivojlantiriladi.</p></div>
+  <div class="topic-grid">
+    <div class="topic-card reveal" onclick="showTopic(0)"><h4>Uzluksiz ta'lim tushunchasi va talqinlari</h4><p>YUNESKO, OECD va turli mualliflarning ta'riflarini qiyoslash.</p><span class="topic-tag tt1">Manba qiyoslash</span></div>
+    <div class="topic-card reveal reveal-d1" onclick="showTopic(1)"><h4>Zamonaviy pedagogik yondashuvlar</h4><p>STEAM, aralash ta'lim va kompetensiyaviy yondashuv manbalarini farqlash.</p><span class="topic-tag tt2">Dalilni baholash</span></div>
+    <div class="topic-card reveal reveal-d2" onclick="showTopic(2)"><h4>Raqamli ta'lim va statistika</h4><p>Foiz va reyting ko'rsatkichlarining manbasi va xatoliklarini tahlil.</p><span class="topic-tag tt3">Statistik savodxonlik</span></div>
+    <div class="topic-card reveal" onclick="showTopic(3)"><h4>Ta'lim islohotlari tajribasi</h4><p>Turli mamlakatlar islohot natijalarini solishtirish.</p><span class="topic-tag tt1">Qiyosiy tahlil</span></div>
+    <div class="topic-card reveal reveal-d1" onclick="showTopic(4)"><h4>Kompetensiyaviy yondashuv</h4><p>Kompetensiya tushunchasining turli kontekstlarda qo'llanilishi.</p><span class="topic-tag tt2">Tushuncha tahlili</span></div>
+    <div class="topic-card reveal reveal-d2" onclick="showTopic(5)"><h4>Xalqaro baholash tizimlari</h4><p>PISA, TIMSS natijalarini tanqidiy baholash.</p><span class="topic-tag tt3">Ma'lumot tekshirish</span></div>
+  </div>
+  <div class="detail-panel" id="topicDetail"></div>
+</section>
+
+<section class="block reveal" id="quiz">
+  <div class="sec-head center"><span class="sec-kicker">O'z-o'zini tekshirish</span><h2>Tanqidiy tahlil bo'yicha bilimingizni sinang</h2><p>Dissertatsiya mazmuni bo'yicha savollar.</p></div>
+  <div class="quiz-card" id="quizCard"><div class="quiz-bar"><div class="quiz-fill" id="qFill"></div></div><div class="quiz-count" id="qCount"></div><div class="quiz-q" id="qText"></div><div id="qOpts"></div><div class="quiz-feedback" id="qFeedback"></div><div style="text-align:right;margin-top:1rem"><button class="btn" id="qNext" style="display:none;background:var(--accent);color:#fff" onclick="nextQ()">Keyingi →</button></div></div>
+</section>
+
+<div class="svc-cta-wrap"><div class="svc-cta">
+  <div class="svc-cta-ic"><svg viewBox="0 0 64 64" fill="none"><rect x="6" y="10" width="52" height="40" rx="6" stroke="#fff" stroke-width="3"/><circle cx="32" cy="30" r="10" stroke="#93C5FD" stroke-width="2.5"/><path d="M24 44h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><line x1="39" y1="37" x2="47" y2="45" stroke="#93C5FD" stroke-width="3" stroke-linecap="round"/></svg></div>
+  <div class="svc-cta-body"><h2>7 ta interaktiv xizmat</h2><p>Diagnostika testi, fakt-fikr ajratish, mantiqiy xato topish, manba ishonchliligi testi, manba qiyoslash, dalil kuchi va media savodxonlik viktorinasi.</p></div>
+  <a href="xizmatlar.html" class="btn-cta">Xizmatlarga o'tish →</a>
+</div></div>
+
+<footer><div class="foot-inner">
+  <div><h4>Dissertatsiya haqida</h4><p><strong style="color:#fff">Mavzu:</strong> Bo'lajak o'qituvchilarda axborotni tanqidiy tahlil qilish ko'nikmasini rivojlantirish</p><p><strong style="color:#fff">Obyekt:</strong> «Uzluksiz ta'limdagi tendensiyalar va zamonaviy yondashuvlar» fani</p><div class="foot-author"><strong>Elamonova Shahlo Ilyos qizi</strong><br><span style="font-size:.84rem">Ilmiy rahbar: p.f.f.d. (PhD) Z.Choriyeva</span></div></div>
+  <div><h4>Bo'limlar</h4><a href="#model">Pedagogik model</a><a href="#levels">Daraja mezonlari</a><a href="#topics">Fan mavzulari</a><a href="#quiz">Test</a></div>
+  <div><h4>Qo'shimcha</h4><a href="xizmatlar.html">Interaktiv xizmatlar →</a></div>
+</div><div class="foot-bottom">© 2025 · Magistrlik dissertatsiyasi raqamli platformasi</div></footer>
+
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10)});
+function animateCount(el){const t=parseInt(el.dataset.count);let c=0;const s=Math.max(1,Math.ceil(t/20));const i=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(i)}el.textContent=c},40)}
+const so=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){animateCount(e.target);so.unobserve(e.target)}})},{threshold:.5});
+document.querySelectorAll('.stat .num').forEach(el=>so.observe(el));
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+document.querySelectorAll('.nav-links a').forEach(a=>{if(!a.getAttribute('href').includes('.html'))a.onclick=()=>document.getElementById('navlinks').classList.remove('open')});
+
+const modelData=[
+  {title:"Motivatsion komponent",desc:"Talabada axborotga ko'r-ko'rona ishonmaslik, uni tekshirish ehtiyojini shakllantirish.",items:["«Nega ishonaman?» savolini o'ziga berish odatini hosil qilish","Hissiy va mantiqiy ta'sir farqini sezishga o'rgatish","Dezinformatsiya va manipulyatsiya namunalarini ko'rsatish","Axborot muhitidagi xavflar haqida xabardorlik oshirish","Tanqidiy munosabatning kasbiy zaruriyatini tushuntirish"]},
+  {title:"Mazmuniy-bilim komponenti",desc:"Tanqidiy tahlil uchun zarur bilimlar tizimi — manba turlari, dalil va fikr farqi, mantiqiy xatolar, statistik savodxonlik.",items:["Birlamchi va ikkilamchi manbalar farqi","Fakt, fikr va baho tushunchalari","Mantiqiy xatolar: shaxsga hujum, ko'pchilikka tayanish, sirpanish yo'li, yolg'on ikkilamchi tanlov, aylanma mantiq, fikrni buzib ko'rsatish","Statistik ma'lumotlarni to'g'ri o'qish va talqin qilish","Ilmiy va noilmiy manbalarni farqlash mezonlari"]},
+  {title:"Faoliyat-amaliy komponent",desc:"Nazariy bilimlarni amaliy mashqlar orqali ko'nikmaga aylantirish.",items:["Ikki manbani yonma-yon solishtirish va ishonchliroqini aniqlash","Matnda mantiqiy xatolarni topish va nomlash","Fakt va fikrni ajratish mashqlari","Ijtimoiy tarmoqdagi soxta xabarlarni aniqlash","Keys-stadi va munozara topshiriqlari","Dalil kuchini 1–5 ball bilan baholash"]},
+  {title:"Refleksiv-baholovchi komponent",desc:"Talaba o'z xulosasi va uning asoslarini qayta ko'rib chiqadi, o'z-o'zini baholaydi.",items:["Har bir mashg'ulot yakunida yozma refleksiya","O'z xulosasining dalillar bilan asoslanganligini tekshirish","Guruhda o'zaro baholash (tengdoshlar tekshiruvi)","Tanqidiy tahlil darajasini o'z-o'zi diagnostikasi","Portfolio yuritish — o'sish dinamikasini kuzatish","Xatolar ustida ishlash va takomillashtirish rejasi"]}
+];
+function showModel(i){const d=document.getElementById('modelDetail'),m=modelData[i];document.querySelectorAll('.mcard').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.mcard')[i].classList.add('active');d.innerHTML='<h3>'+m.title+'</h3><p>'+m.desc+'</p><ul>'+m.items.map(x=>'<li>'+x+'</li>').join('')+'</ul>';d.className='detail-panel show';d.scrollIntoView({behavior:'smooth',block:'nearest'})}
+
+const levelData=[
+  {title:"Past daraja — batafsil tavsif",desc:"Bu darajadagi talaba axborotni tanqidsiz qabul qiladi.",items:["Birinchi uchratgan manbaga ishonadi","Muallif va nashr etuvchini tekshirmaydi","Hissiy til bilan ilmiy tilni farqlamaydi","Statistik ma'lumotlarni shubhasiz qabul qiladi","Xulosalarni tayyor holda oladi","Qarama-qarshi manbalarni solishtirmaydi"]},
+  {title:"O'rta daraja — batafsil tavsif",desc:"Talaba manbani qisman tekshiradi, lekin mustaqil xulosa chiqarishda qiynaladi.",items:["Manbaning muallifi va sanasiga e'tibor beradi","Fakt va fikrni qisman farqlaydi","Ba'zi mantiqiy xatolarni taniydi","Xulosani ko'rsatma bilan asoslay oladi","Ikki manbani solishtiradi, lekin uchinchisini izlamaydi","Statistikaga shubha bilan qarashni boshlaydi"]},
+  {title:"Yuqori daraja — batafsil tavsif",desc:"Talaba manbalarni mustaqil qiyoslaydi, dalillarni baholaydi va asoslangan xulosa chiqaradi.",items:["Har qanday manbaning muallifi, sanasi va maqsadini tekshiradi","Fakt, fikr va bahoni aniq farqlaydi","Barcha asosiy mantiqiy xatolarni taniydi va nomlaydi","Mustaqil ravishda dalilga asoslangan xulosa chiqaradi","Bir nechta manbalarni solishtiradi, qarama-qarshiliklarni aniqlaydi","O'z xulosasini qayta ko'rib chiqishga tayyor","Ijtimoiy tarmoq va mediada dezinformatsiyani sezadi"]}
+];
+function showLevel(i){const d=document.getElementById('levelDetail'),l=levelData[i];document.querySelectorAll('.lvl-card').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.lvl-card')[i].classList.add('active');d.innerHTML='<h3>'+l.title+'</h3><p>'+l.desc+'</p><ul>'+l.items.map(x=>'<li>'+x+'</li>').join('')+'</ul>';d.className='detail-panel show';d.scrollIntoView({behavior:'smooth',block:'nearest'})}
+
+const topicData=[
+  {title:"Uzluksiz ta'lim tushunchasi va talqinlari",desc:"YUNESKO, OECD va Yevropa Kengashidagi ta'riflarni qiyoslash.",items:["YUNESKO: «hayot davomida ta'lim» — keng falsafiy yondashuv","OECD: «iqtisodiy raqobatbardoshlik uchun malaka oshirish» — tor yondashuv","Yevropa Kengashi: «fuqarolik kompetensiyalari uchun ta'lim»","Talaba vazifasi: uchta ta'rifni solishtirish, farq sabablarini asoslash","Tanqidiy nuqta: har bir ta'rif qaysi kontekstda yaratilganini tushunish"]},
+  {title:"Zamonaviy pedagogik yondashuvlar",desc:"STEAM, aralash ta'lim, teskari sinf kabi metodlar haqidagi manbalarni farqlash.",items:["Targ'ibot manbasi: 'Bu usul 100% samarali!' — dalilsiz da'vo","Ilmiy tadqiqot: 'N=340, p<0.05, 18% o'sish' — raqamli dalil","Davlat hujjati: 'Joriy etish tavsiya etiladi' — siyosiy qaror","Talaba vazifasi: manba turini aniqlash, dalil kuchini baholash","Tanqidiy nuqta: «targ'ibot yoki tadqiqot?» savolini berish"]},
+  {title:"Raqamli ta'lim va statistika",desc:"Statistik ma'lumotlarning manbasi, usuli va xatoliklarini tahlil.",items:["Statistik ma'lumotning manbasi qaysi tashkilot?","Tanlama hajmi (N) yetarlimi?","Ko'rsatkichlar qanday hisoblangan?","Raqamlarni buzib ko'rsatish usullari: noto'g'ri masshtab, kontekstsiz foiz","Tanqidiy nuqta: «Bu raqam nimani isbotlaydi va nimani isbotlamaydi?»"]},
+  {title:"Ta'lim islohotlari tajribasi",desc:"Turli mamlakatlar islohot natijalarini solishtirish.",items:["Finlyandiya modeli: kontekstga bog'liqlik","Singapur tajribasi: madaniy omillarni hisobga olish","O'zbekiston islohotlari: rasmiy hujjat va amaliy natija orasidagi farq","Talaba vazifasi: ikki mamlakat islohot natijalarini solishtirish","Tanqidiy nuqta: «Boshqa mamlakat tajribasini ko'chirib olish mumkinmi?»"]},
+  {title:"Kompetensiyaviy yondashuv",desc:"Kompetensiya tushunchasining turli kontekstlarda farqli talqini.",items:["Ta'limda: «bilim + ko'nikma + munosabat»","Biznesda: «ish o'rinlariga mos malaka»","Psixologiyada: «ichki motivatsiya va o'z-o'zini boshqarish»","Talaba vazifasi: uchta ta'rifni solishtirish, eng mosini tanlash","Tanqidiy nuqta: bir tushunchaning turli sohalarda turlicha ishlatilishi"]},
+  {title:"Xalqaro baholash tizimlari",desc:"PISA, TIMSS natijalarini tanqidiy baholash.",items:["PISA — 15 yoshlilarni baholaydi, lekin butun tizimni ifodaladimi?","TIMSS — matematik va tabiiy fan, lekin ijodiy fikrlashni o'lchaydimi?","Reyting jadvallari: yuqori o'rin ≠ yaxshi ta'lim tizimi","Madaniy farqlar: test shakliga har madaniyat bir xil munosabatda emas","Tanqidiy nuqta: «Raqam nima deydi va nima demaydi?»"]}
+];
+function showTopic(i){const d=document.getElementById('topicDetail'),t=topicData[i];document.querySelectorAll('.topic-card').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.topic-card')[i].classList.add('active');d.innerHTML='<h3>'+t.title+'</h3><p>'+t.desc+'</p><ul>'+t.items.map(x=>'<li>'+x+'</li>').join('')+'</ul>';d.className='detail-panel show';d.scrollIntoView({behavior:'smooth',block:'nearest'})}
+
+const quizBank=[{q:"Tanqidiy tahlilda manbani tekshirishning birinchi qadami nima?",opts:["Matnni to'liq o'qish","Muallif va manba kelib chiqishini aniqlash","Internetdan izlash","Do'stlardan so'rash"],a:1,fb:"avvalo muallif va nashr etuvchining malakasi aniqlanadi."},{q:"'Shaxsga hujum' mantiqiy xatosi nimani anglatadi?",opts:["Fikrga emas, shaxsga hujum","Ko'pchilikka tayanish","Sababni natijaga tenglash","Mavzudan chetlashish"],a:0,fb:"dalilni rad etish o'rniga shaxsni tanqid qilish."},{q:"Pedagogik modelning birinchi komponenti qaysi?",opts:["Faoliyat-amaliy","Refleksiv-baholovchi","Motivatsion","Mazmuniy-bilim"],a:2,fb:"motivatsion — axborotga ishonchsizlik hissi."},{q:"Fakt va fikrni farqlashning asosiy belgisi?",opts:["Matn uzunligi","Tekshirish mumkinligi","Yoqimli yozilganligi","Muallifning unvoni"],a:1,fb:"fakt — tekshirish mumkin, fikr — shaxsiy baho."},{q:"'Ko'pchilikka tayanish' xatosiga misol?",opts:["Hamma qo'llaydi, demak to'g'ri","Professor noto'g'ri, chunki yosh","Yoki A yoki B","Sababsiz xulosa"],a:0,fb:"ko'pchilik qo'llashi to'g'ri ekanligini isbotlamaydi."},{q:"Tengdoshlar tekshiruvi nima?",opts:["Talabalar baholashi","Soha mutaxassislari sifatni ta'minlashi","O'qituvchi nazorati","Ota-ona fikri"],a:1,fb:"ilmiy maqolaning mutaxassislar tomonidan sifat nazorati."},{q:"'Bog'liqlik sababiy aloqani isbotlamaydi' — bu qanday tamoyil?",opts:["Shaxsga hujum","Sirpanish yo'li","Sababiy xato","Fikrni buzish"],a:2,fb:"bog'liqlik sababiy aloqani isbotlamaydi."},{q:"Tajriba-sinov ishi necha bosqichda?",opts:["2 ta","3 ta","4 ta","5 ta"],a:1,fb:"aniqlovchi, shakllantiruvchi va nazorat bosqichlari."},{q:"Manba ishonchliligida qaysi mezon muhim EMAS?",opts:["Muallif malakasi","Dalillar mavjudligi","Sayt dizayni","Nashr sanasi"],a:2,fb:"sayt dizayni ishonchlilik mezoni emas."},{q:"Refleksiv komponentda talaba nima qiladi?",opts:["Yangi mavzu o'rganadi","O'z xulosasini qayta ko'rib chiqadi","Imtihon topshiradi","Manbalarni yodlaydi"],a:1,fb:"o'z xulosasi va asoslarini qayta tekshiradi."}];
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+let quiz=shuffle(quizBank),qi=0,correct=0,answered=false;const letters=['A','B','C','D'];
+function renderQ(){answered=false;const item=quiz[qi];document.getElementById('qCount').textContent=(qi+1)+' / '+quiz.length;document.getElementById('qFill').style.width=(qi/quiz.length*100)+'%';document.getElementById('qText').textContent=item.q;document.getElementById('qFeedback').textContent='';document.getElementById('qFeedback').className='quiz-feedback';document.getElementById('qNext').style.display='none';const box=document.getElementById('qOpts');box.innerHTML='';item.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='qopt';b.innerHTML='<span class="letter">'+letters[i]+'</span><span>'+o+'</span>';b.onclick=()=>pick(i,b);box.appendChild(b)})}
+function pick(i,btn){if(answered)return;answered=true;const item=quiz[qi];document.querySelectorAll('#qOpts .qopt').forEach(a=>a.classList.add('disabled'));const fb=document.getElementById('qFeedback');if(i===item.a){btn.classList.add('correct');correct++;fb.textContent="✓ To'g'ri — "+item.fb;fb.className='quiz-feedback ok'}else{btn.classList.add('wrong');document.querySelectorAll('#qOpts .qopt')[item.a].classList.add('correct');fb.textContent="✗ To'g'ri javob: "+item.fb;fb.className='quiz-feedback no'}document.getElementById('qNext').style.display='inline-flex';document.getElementById('qNext').textContent=qi<quiz.length-1?'Keyingi →':'Natija →'}
+function nextQ(){if(qi<quiz.length-1){qi++;renderQ()}else showResult()}
+function showResult(){const c=document.getElementById('quizCard');const p=Math.round(correct/quiz.length*100);let m="Yana urinib ko'ring!";if(p>=80)m="Ajoyib!";else if(p>=60)m="Yaxshi! Ba'zi mavzularni takrorlang.";else if(p>=40)m="O'rtacha.";const off=402*(1-correct/quiz.length);c.innerHTML='<div class="quiz-result"><div class="rring"><svg width="130" height="130" viewBox="0 0 150 150"><circle cx="75" cy="75" r="64" fill="none" stroke="#E0EBF7" stroke-width="11"/><circle cx="75" cy="75" r="64" fill="none" stroke="#1A73E8" stroke-width="11" stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="402" transform="rotate(-90 75 75)" id="resRing"/></svg><div class="rbig">'+correct+'/'+quiz.length+'</div></div><p>'+m+' ('+p+'%)</p><button class="btn" style="background:var(--accent);color:#fff" onclick="restartQuiz()">Qaytadan ↻</button></div>';setTimeout(()=>{document.getElementById('resRing').style.transition='stroke-dashoffset 1s';document.getElementById('resRing').style.strokeDashoffset=off},100)}
+function restartQuiz(){qi=0;correct=0;quiz=shuffle(quizBank);document.getElementById('quizCard').innerHTML=quizHTML;renderQ()}
+const quizHTML=document.getElementById('quizCard').innerHTML;renderQ();
+</script>
+</body>
+</html>
