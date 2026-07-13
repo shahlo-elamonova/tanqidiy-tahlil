@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A73E8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<title>Interaktiv xizmatlar — Tanqidiy tahlil trenajyori</title>
+<style>
+:root{
+  --bg1:#EAF2FB;
+  --bg2:#F0F6FF;
+  --bg3:#E3EDF8;
+  --surface:#FFFFFF;
+  --surface2:#F5F8FC;
+  --accent:#1A73E8;
+  --accent2:#4F46E5;
+  --accent3:#E84393;
+  --green:#16A34A;
+  --red:#DC2626;
+  --amber:#D97706;
+  --text:#1A2332;
+  --text2:#5B6A80;
+  --glass:rgba(255,255,255,0.85);
+  --border:rgba(26,115,232,0.15);
+  --sans:'Segoe UI',-apple-system,Helvetica,Arial,sans-serif;
+  --mono:'Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:linear-gradient(150deg,var(--bg1) 0%,#DCE8F7 40%,var(--bg2) 100%);
+  color:var(--text);font-family:var(--sans);line-height:1.6;
+  min-height:100vh;
+}
+::selection{background:var(--accent);color:#fff;}
+
+/* TOPBAR — desktop */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(234,242,251,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+}
+.topbar-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;gap:12px;height:56px;
+}
+.logo{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--text);}
+.logo svg{flex-shrink:0;}
+.logo span{color:var(--accent);}
+.back-link{
+  font-family:var(--sans);font-size:13px;color:var(--accent);font-weight:600;
+  text-decoration:none;border:1px solid var(--border);padding:6px 14px;
+  border-radius:8px;white-space:nowrap;transition:all .15s;flex-shrink:0;
+}
+.back-link:hover{background:rgba(26,115,232,0.06);}
+.tabs-scroll{margin-left:auto;overflow-x:auto;scrollbar-width:none;display:flex;gap:4px;}
+.tabs-scroll::-webkit-scrollbar{display:none;}
+.tab{
+  background:transparent;border:1px solid transparent;color:var(--text2);
+  padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;
+  font-family:var(--sans);white-space:nowrap;transition:all .2s;
+}
+.tab:hover{color:var(--text);background:rgba(26,115,232,0.06);}
+.tab.active{color:var(--accent);border-color:var(--accent);background:rgba(26,115,232,0.08);}
+
+/* Mobile bottom nav */
+.mob-bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:#fff;border-top:1px solid var(--border);
+  box-shadow:0 -4px 20px rgba(26,115,232,0.1);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+}
+.mob-bottom-inner{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  max-width:500px;margin:0 auto;
+}
+.mob-tab{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:8px 4px;border-radius:10px;border:none;background:transparent;
+  cursor:pointer;font-family:var(--sans);font-size:10px;color:var(--text2);
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+}
+.mob-tab svg{width:22px;height:22px;color:var(--text2);transition:color .15s;}
+.mob-tab.active{color:var(--accent);background:rgba(26,115,232,0.08);}
+.mob-tab.active svg{color:var(--accent);}
+.mob-tab span{line-height:1.1;}
+
+/* More menu overlay */
+.mob-more-overlay{
+  display:none;position:fixed;bottom:0;left:0;right:0;top:0;z-index:199;
+  background:rgba(0,0,0,0.3);
+}
+.mob-more-overlay.open{display:block;}
+.mob-more-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:201;
+  background:#fff;border-radius:20px 20px 0 0;
+  padding:12px 16px calc(20px + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 30px rgba(0,0,0,0.15);
+  transform:translateY(100%);transition:transform .3s ease;
+}
+.mob-more-sheet.open{transform:translateY(0);}
+.mob-more-handle{width:40px;height:4px;border-radius:2px;background:#D0D5DD;margin:0 auto 14px;}
+.mob-more-title{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:center;}
+.mob-more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mob-more-item{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 8px;border-radius:14px;border:1px solid var(--border);
+  background:var(--surface2);cursor:pointer;font-family:var(--sans);
+  font-size:12px;color:var(--text);text-align:center;
+  -webkit-tap-highlight-color:transparent;transition:all .15s;
+}
+.mob-more-item.active{border-color:var(--accent);background:rgba(26,115,232,0.08);color:var(--accent);font-weight:600;}
+.mob-more-item svg{width:26px;height:26px;color:var(--accent);}
+.mob-more-item:active{transform:scale(0.95);}
+
+@media(max-width:700px){
+  .tabs-scroll{display:none;}
+  .mob-bottom-nav{display:block;}
+  .back-link{padding:5px 10px;font-size:11px;}
+  .logo{font-size:14px;}
+  .logo svg{width:20px;height:20px;}
+  .topbar-inner{height:48px;gap:8px;}
+}
+
+/* Content */
+.container{max-width:880px;margin:0 auto;padding:48px 24px 100px;}
+@media(max-width:700px){
+  .container{padding:24px 14px 100px;}
+  h1{font-size:clamp(22px,6vw,28px)!important;}
+  .subtitle{font-size:14px!important;margin-bottom:20px!important;}
+  .q-card{padding:16px 14px;}
+  .q-text{font-size:15px!important;}
+  .opt{padding:12px 14px;font-size:14px!important;border-radius:12px;}
+  .score-box{padding:28px 16px;}
+  .score-big{font-size:48px!important;}
+  .dd-container{flex-direction:column;gap:14px;}
+  .dd-zone{min-height:120px;min-width:auto;}
+  .dd-item{font-size:13.5px;padding:11px 14px;}
+  .g-card{padding:18px 16px;}
+  .craap-row{gap:10px;}
+  .craap-label{width:100px;font-size:13px;}
+  .craap-val{font-size:17px;width:32px;}
+  .compare-grid{grid-template-columns:1fr;gap:12px;}
+  .src-box{padding:16px;}
+  .compare-opts{flex-direction:column;gap:6px;}
+  .c-opt{padding:14px;font-size:14.5px;border-radius:12px;}
+  .arg-card{padding:16px;}
+  .arg-statement{font-size:14.5px;padding:12px 14px;}
+  .str-bar{flex-wrap:wrap;gap:8px;}
+  .str-label{width:auto;font-size:12px;}
+  .str-seg{height:40px;font-size:13px;}
+  .media-card{padding:18px;}
+  .media-body{font-size:14.5px;}
+  .media-btns{flex-direction:column;gap:8px;}
+  .m-btn{padding:16px;font-size:15px;border-radius:14px;}
+  .fb{font-size:13.5px;padding:12px 14px;}
+  .btn-neon,.btn-outline{padding:12px 20px;font-size:15px;border-radius:12px;width:100%;}
+}
+.panel{display:none;animation:fadeUp .35s ease;}
+.panel.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-0.03em;margin-bottom:8px;color:var(--text);}
+h1 .glow{color:var(--accent);}
+.subtitle{font-size:15.5px;color:var(--text2);margin-bottom:36px;max-width:60ch;}
+h2{font-size:20px;font-weight:700;margin:32px 0 14px;color:var(--text);}
+h3{font-size:17px;font-weight:600;margin-bottom:10px;}
+
+.g-card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:24px;
+  margin-bottom:18px;
+  backdrop-filter:blur(8px);
+  transition:border-color .2s;
+  box-shadow:0 2px 12px rgba(26,115,232,0.06);
+}
+.g-card:hover{border-color:rgba(26,115,232,0.3);}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 24px;border-radius:10px;border:none;cursor:pointer;
+  font-size:14px;font-family:var(--sans);font-weight:600;transition:all .2s;
+}
+.btn-neon{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  box-shadow:0 2px 14px rgba(26,115,232,0.25);
+}
+.btn-neon:hover{box-shadow:0 4px 20px rgba(26,115,232,0.35);transform:translateY(-1px);}
+.btn-outline{
+  background:transparent;border:1px solid var(--accent);color:var(--accent);
+}
+.btn-outline:hover{background:rgba(26,115,232,0.08);}
+.btn-sm{padding:7px 16px;font-size:13px;border-radius:8px;}
+
+.progress-wrap{margin-bottom:24px;}
+.progress-track{height:4px;background:rgba(26,115,232,0.1);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .4s;}
+.progress-label{font-size:12px;color:var(--text2);margin-top:6px;}
+
+.q-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:22px 24px;margin-bottom:14px;box-shadow:0 1px 6px rgba(0,0,0,0.04);
+}
+.q-num{font-size:12px;color:var(--accent);font-weight:700;font-family:var(--mono);margin-bottom:8px;}
+.q-text{font-size:16.5px;font-weight:600;margin-bottom:16px;line-height:1.5;}
+
+.opt{
+  display:block;width:100%;text-align:left;
+  padding:13px 18px;border:1px solid var(--border);border-radius:10px;
+  margin-bottom:8px;cursor:pointer;font-size:14.5px;color:var(--text);
+  background:var(--surface2);font-family:var(--sans);transition:all .15s;
+}
+.opt:hover{border-color:var(--accent);background:rgba(26,115,232,0.04);}
+.opt.correct{border-color:var(--green);background:rgba(22,163,74,0.08);color:var(--green);}
+.opt.wrong{border-color:var(--red);background:rgba(220,38,38,0.06);color:var(--red);}
+.opt[disabled]{pointer-events:none;opacity:0.7;}
+
+.fb{
+  margin-top:12px;padding:14px 18px;border-radius:10px;font-size:14px;
+  display:none;line-height:1.5;
+}
+.fb.show{display:block;}
+.fb.ok{background:rgba(22,163,74,0.08);border-left:3px solid var(--green);color:#15803d;}
+.fb.no{background:rgba(220,38,38,0.06);border-left:3px solid var(--red);color:#b91c1c;}
+
+.score-box{
+  text-align:center;padding:40px 24px;
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  box-shadow:0 2px 16px rgba(26,115,232,0.08);
+}
+.score-big{
+  font-size:64px;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.score-label{font-size:15px;color:var(--text2);margin-top:4px;}
+.score-badge{
+  display:inline-block;margin-top:16px;padding:8px 22px;border-radius:999px;
+  font-size:14px;font-weight:700;
+}
+
+.dd-container{display:flex;gap:20px;margin:20px 0;flex-wrap:wrap;}
+@media(max-width:650px){.dd-container{flex-direction:column;}}
+.dd-zone{
+  flex:1;min-width:240px;min-height:200px;
+  border:2px dashed var(--border);border-radius:14px;padding:16px;
+  transition:border-color .2s, background .2s;background:var(--surface);
+}
+.dd-zone.over{border-color:var(--accent);background:rgba(26,115,232,0.04);}
+.dd-zone h3{text-align:center;margin-bottom:12px;font-size:15px;}
+.dd-zone.fact-zone{border-color:rgba(22,163,74,0.25);}
+.dd-zone.fact-zone h3{color:var(--green);}
+.dd-zone.opinion-zone{border-color:rgba(217,119,6,0.25);}
+.dd-zone.opinion-zone h3{color:var(--amber);}
+.dd-item{
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;margin-bottom:8px;cursor:grab;font-size:14px;
+  transition:all .2s;user-select:none;
+}
+.dd-item:active{cursor:grabbing;opacity:0.8;}
+.dd-item.correct-drop{border-color:var(--green);background:rgba(22,163,74,0.08);}
+.dd-item.wrong-drop{border-color:var(--red);background:rgba(220,38,38,0.06);}
+.dd-source{
+  border:2px dashed rgba(79,70,229,0.2);border-radius:14px;padding:16px;
+  margin-bottom:20px;min-height:60px;background:var(--surface);
+}
+.dd-source h3{color:var(--accent2);text-align:center;margin-bottom:12px;font-size:15px;}
+
+.craap-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
+.craap-label{width:140px;font-weight:600;font-size:14px;flex-shrink:0;}
+.craap-label small{color:var(--text2);font-weight:400;}
+.craap-slider{
+  flex:1;min-width:160px;-webkit-appearance:none;height:6px;
+  border-radius:3px;background:rgba(26,115,232,0.12);outline:none;
+}
+.craap-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--accent);cursor:pointer;box-shadow:0 0 8px rgba(26,115,232,0.3);
+}
+.craap-val{
+  width:40px;text-align:center;font-size:20px;font-weight:700;
+  color:var(--accent);font-family:var(--mono);
+}
+.craap-meter{margin-top:12px;height:8px;background:rgba(26,115,232,0.1);border-radius:4px;overflow:hidden;}
+.craap-meter-fill{height:100%;border-radius:4px;transition:width .4s, background .4s;}
+
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+@media(max-width:650px){.compare-grid{grid-template-columns:1fr;}}
+.src-box{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:20px;position:relative;box-shadow:0 1px 6px rgba(0,0,0,0.04);
+}
+.src-tag{
+  position:absolute;top:12px;right:14px;font-size:11px;padding:3px 12px;
+  border-radius:999px;font-weight:700;font-family:var(--mono);
+}
+.src-tag.a{background:rgba(26,115,232,0.1);color:var(--accent);}
+.src-tag.b{background:rgba(79,70,229,0.1);color:var(--accent2);}
+.compare-q{
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;margin-bottom:12px;
+}
+.compare-opts{display:flex;gap:8px;margin-top:10px;}
+.c-opt{
+  flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);
+  cursor:pointer;font-size:13px;text-align:center;background:var(--surface);
+  color:var(--text);font-family:var(--sans);transition:all .15s;
+}
+.c-opt:hover{border-color:var(--accent);}
+.c-opt.right{border-color:var(--green);background:rgba(22,163,74,0.08);color:var(--green);}
+.c-opt.wrong-a{border-color:var(--red);background:rgba(220,38,38,0.06);color:var(--red);}
+
+.arg-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px 22px;margin-bottom:14px;box-shadow:0 1px 6px rgba(0,0,0,0.04);
+}
+.arg-statement{
+  font-size:16px;font-weight:600;padding:14px 18px;
+  background:var(--surface2);border-radius:10px;margin-bottom:16px;
+  border-left:3px solid var(--accent2);
+}
+.str-bar{display:flex;align-items:center;gap:10px;margin:10px 0;}
+.str-label{font-size:13px;width:100px;flex-shrink:0;color:var(--text2);}
+.str-track{flex:1;display:flex;gap:3px;}
+.str-seg{
+  flex:1;height:32px;border-radius:4px;cursor:pointer;
+  background:var(--surface2);border:1px solid transparent;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:transparent;
+}
+.str-seg:hover{border-color:var(--accent);color:var(--text2);}
+.str-seg.filled{color:#fff;font-weight:600;}
+.str-seg.s1{background:var(--red);}
+.str-seg.s2{background:var(--amber);}
+.str-seg.s3{background:#FBBF24;}
+.str-seg.s4{background:var(--green);}
+.str-seg.s5{background:var(--accent);}
+
+.media-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:22px;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.04);
+}
+.media-header{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.media-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;
+}
+.media-name{font-weight:600;font-size:14px;}
+.media-handle{font-size:12px;color:var(--text2);}
+.media-body{font-size:15px;line-height:1.65;margin-bottom:16px;}
+.media-btns{display:flex;gap:10px;}
+.m-btn{
+  flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);
+  cursor:pointer;font-size:14px;text-align:center;background:var(--surface2);
+  color:var(--text);font-family:var(--sans);font-weight:600;transition:all .15s;
+}
+.m-btn:hover{border-color:var(--accent);}
+.m-btn.correct-m{background:rgba(22,163,74,0.1);border-color:var(--green);color:var(--green);}
+.m-btn.wrong-m{background:rgba(220,38,38,0.06);border-color:var(--red);color:var(--red);}
+
+/* PRO enhancement layer */
+.pro-rail{position:fixed;right:16px;bottom:16px;z-index:240;display:flex;flex-direction:column;gap:9px}
+.pro-action{width:46px;height:46px;border:none;border-radius:14px;background:rgba(255,255,255,.92);color:var(--accent);box-shadow:0 9px 26px rgba(26,115,232,.22);cursor:pointer;font-size:18px;backdrop-filter:blur(12px);transition:.2s}
+.pro-action:hover{transform:translateY(-2px)}
+.pro-dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+.pro-kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center;box-shadow:0 2px 10px rgba(26,115,232,.06)}
+.pro-kpi strong{font-size:24px;color:var(--accent);display:block}.pro-kpi span{font-size:12px;color:var(--text2)}
+html.dark body{--bg1:#0B1220;--bg2:#101B2D;--bg3:#142038;--surface:#111B2C;--surface2:#0E1727;--text:#E8F0FA;--text2:#A9B8CC;--glass:rgba(17,27,44,.86);--border:rgba(147,197,253,.15);background:linear-gradient(150deg,#0B1220,#101B2D 45%,#0A1424)}
+html.dark .topbar{background:rgba(11,18,32,.92)}html.dark .mob-bottom-nav,html.dark .mob-more-sheet{background:#111B2C}
+@media(max-width:700px){.pro-dashboard{grid-template-columns:1fr 1fr}.pro-rail{right:10px;bottom:84px}.pro-action{width:42px;height:42px}.pro-kpi:last-child{grid-column:1/-1}}
+
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+button,a,[onclick]{touch-action:manipulation}
+</style>
+</head>
+<body>
+<noscript><div style="padding:12px;text-align:center;background:#fff3cd;color:#664d03;font-family:Arial,sans-serif">Ushbu platformaning interaktiv qismlari ishlashi uchun brauzerda JavaScript yoqilgan bo‘lishi kerak.</div></noscript>
+<div class="pro-rail">
+ <button class="pro-action" id="svcTheme" title="Yorug'/qorong'i rejim">☾</button>
+ <button class="pro-action" id="resetProgress" title="Natijalarni tozalash">↺</button>
+</div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="url(#lg)" stroke-width="2"/><path d="M8 12l3 3 5-6" stroke="url(#lg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="lg" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#1A73E8"/><stop offset="1" stop-color="#4F46E5"/></linearGradient></defs></svg>
+      Tanqidiy <span>Tahlil</span>
+    </div>
+    <a href="index.html" class="back-link">← Asosiy sahifa</a>
+    <div class="tabs-scroll">
+      <button class="tab active" data-p="diag">Diagnostika</button>
+      <button class="tab" data-p="factop">Fakt / Fikr</button>
+      <button class="tab" data-p="fallacy">Mantiqiy xato</button>
+      <button class="tab" data-p="craap">Manba testi</button>
+      <button class="tab" data-p="compare">Manba qiyoslash</button>
+      <button class="tab" data-p="argmap">Dalil kuchi</button>
+      <button class="tab" data-p="media">Media viktorina</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="mob-bottom-nav">
+  <div class="mob-bottom-inner">
+    <button class="mob-tab active" data-p="diag">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>
+      <span>Test</span>
+    </button>
+    <button class="mob-tab" data-p="factop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+      <span>Fakt/Fikr</span>
+    </button>
+    <button class="mob-tab" data-p="fallacy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      <span>Xato</span>
+    </button>
+    <button class="mob-tab" onclick="openMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+      <span>Yana 4 ta</span>
+    </button>
+  </div>
+</div>
+
+<!-- MOBILE MORE SHEET -->
+<div class="mob-more-overlay" id="moreOverlay" onclick="closeMore()"></div>
+<div class="mob-more-sheet" id="moreSheet">
+  <div class="mob-more-handle"></div>
+  <div class="mob-more-title">Boshqa xizmatlar</div>
+  <div class="mob-more-grid">
+    <div class="mob-more-item" data-p="craap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+      Manba testi
+    </div>
+    <div class="mob-more-item" data-p="compare">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>
+      Manba qiyoslash
+    </div>
+    <div class="mob-more-item" data-p="argmap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h12M3 18h8"/></svg>
+      Dalil kuchi
+    </div>
+    <div class="mob-more-item" data-p="media">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4-9 4-9-4 9-4z"/><path d="M3 12l9 4 9-4"/></svg>
+      Media viktorina
+    </div>
+    <div class="mob-more-item" onclick="window.location.href='index.html'" style="border-color:var(--accent);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      Asosiy sahifa
+    </div>
+  </div>
+</div>
+
+<div class="container"><div class="pro-dashboard"><div class="pro-kpi"><strong id="doneCount">0/7</strong><span>Bajarilgan xizmatlar</span></div><div class="pro-kpi"><strong id="avgScore">0%</strong><span>O'rtacha natija</span></div><div class="pro-kpi"><strong id="savedState">Faol</strong><span>Avtomatik saqlash</span></div></div>
+
+<!-- 1. DIAGNOSTIKA -->
+<div class="panel active" id="p-diag">
+  <h1>Tanqidiy tahlil <span class="glow">diagnostikasi</span></h1>
+  <p class="subtitle">10 ta savolga javob bering va o'z ko'nikmangiz darajasini bilib oling. Natija — past, o'rta yoki yuqori daraja.</p>
+  <div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="diagProg"></div></div><div class="progress-label" id="diagProgL">0 / 10</div></div>
+  <div id="diagArea"></div>
+  <div id="diagScore"></div>
+</div>
+
+<!-- 2. FAKT / FIKR -->
+<div class="panel" id="p-factop">
+  <h1>Fakt yoki <span class="glow">fikr?</span></h1>
+  <p class="subtitle">Gaplarni sichqoncha bilan ushlang va to'g'ri zonaga tashlang. Mobil qurilmada — tugmalardan foydalaning.</p>
+  <div class="dd-source" id="ddSource"><h3>⬡ Gaplar</h3></div>
+  <div class="dd-container">
+    <div class="dd-zone fact-zone" id="factZone"><h3>📋 Faktlar</h3></div>
+    <div class="dd-zone opinion-zone" id="opinionZone"><h3>💬 Fikrlar</h3></div>
+  </div>
+  <div style="text-align:center;margin-top:16px;">
+    <button class="btn btn-neon" id="checkFO" style="display:none;">Tekshirish</button>
+  </div>
+  <div id="foResult"></div>
+</div>
+
+<!-- 3. MANTIQIY XATO -->
+<div class="panel" id="p-fallacy">
+  <h1>Mantiqiy <span class="glow">xatoni</span> toping</h1>
+  <p class="subtitle">Har bir stsenariydagi mantiqiy xato turini aniqlang. Ta'lim sohasidan olingan real vaziyatlar.</p>
+  <div id="fallArea"></div>
+  <div id="fallScore"></div>
+</div>
+
+<!-- 4. MANBA TESTI -->
+<div class="panel" id="p-craap">
+  <h1>Manba <span class="glow">ishonchliligi</span> testi</h1>
+  <p class="subtitle">Manbangizni 5 mezon bo'yicha 1–5 ball bilan baholang. Umumiy ball ishonchlilik darajasini ko'rsatadi.</p>
+  <div class="g-card">
+    <h3>Manbani kiriting</h3>
+    <input type="text" id="craapSrc" placeholder="Manba nomi yoki manzili..." style="width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:10px;font-size:15px;background:var(--surface2);color:var(--text);margin-bottom:22px;outline:none;">
+    <div id="craapSliders"></div>
+    <div class="craap-meter"><div class="craap-meter-fill" id="craapMeter" style="width:60%;background:var(--amber);"></div></div>
+    <div style="text-align:center;margin-top:20px;">
+      <div class="score-big" id="craapTotal" style="font-size:52px;">15</div>
+      <div style="font-size:14px;color:var(--text2);margin-top:4px;" id="craapVerdict">O'rtacha ishonchli</div>
+      <div style="display:flex;justify-content:center;gap:20px;font-size:12px;color:var(--text2);margin-top:12px;">
+        <span style="color:var(--red);">5–10: Past</span>
+        <span style="color:var(--amber);">11–18: O'rta</span>
+        <span style="color:var(--green);">19–25: Yuqori</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. MANBA QIYOSLASH -->
+<div class="panel" id="p-compare">
+  <h1>Manba <span class="glow">qiyoslash</span></h1>
+  <p class="subtitle">Ikki manbani yonma-yon o'qing, keyin savollarga javob bering. Qaysi manba ishonchliroq?</p>
+  <div id="compareArea"></div>
+</div>
+
+<!-- 6. DALIL KUCHI -->
+<div class="panel" id="p-argmap">
+  <h1>Dalil <span class="glow">kuchi</span></h1>
+  <p class="subtitle">Har bir da'voni o'qing va uning dalil kuchini 1 dan 5 gacha baholang. Keyin to'g'ri javob bilan solishtiring.</p>
+  <div id="argArea"></div>
+  <div style="text-align:center;margin-top:18px;">
+    <button class="btn btn-neon" id="checkArg">Javoblarni tekshirish</button>
+  </div>
+  <div id="argResult"></div>
+</div>
+
+<!-- 7. MEDIA VIKTORINA -->
+<div class="panel" id="p-media">
+  <h1>Media <span class="glow">savodxonlik</span></h1>
+  <p class="subtitle">Har bir postni o'qing va uning haqiqiy yoki soxta ekanligini aniqlang. Ijtimoiy tarmoqdagi dezinformatsiyani sezish mashqi.</p>
+  <div id="mediaArea"></div>
+  <div id="mediaScore"></div>
+</div>
+
+</div>
+
+<script>
+// Switch panel — universal
+function switchTo(p){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab[data-p="'+p+'"]').forEach(b=>b.classList.add('active'));
+  document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mob-tab[data-p="'+p+'"]').forEach(b=>b.classList.add('active'));
+  document.querySelectorAll('.mob-more-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mob-more-item[data-p="'+p+'"]').forEach(b=>b.classList.add('active'));
+  document.querySelectorAll('.panel').forEach(pan=>pan.classList.remove('active'));
+  document.getElementById('p-'+p).classList.add('active');
+  closeMore();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// Desktop tabs
+document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>switchTo(t.dataset.p))});
+// Mobile bottom tabs
+document.querySelectorAll('.mob-tab[data-p]').forEach(t=>{t.addEventListener('click',()=>switchTo(t.dataset.p))});
+// Mobile more sheet items
+document.querySelectorAll('.mob-more-item[data-p]').forEach(t=>{t.addEventListener('click',()=>switchTo(t.dataset.p))});
+// More sheet open/close
+function openMore(){document.getElementById('moreOverlay').classList.add('open');document.getElementById('moreSheet').classList.add('open')}
+function closeMore(){document.getElementById('moreOverlay').classList.remove('open');document.getElementById('moreSheet').classList.remove('open')}
+
+// 1. DIAGNOSTIKA
+const diagQ=[
+  {q:"Ma'lumot manbasi ishonchlimi tekshirishning birinchi qadami nima?",o:["Matnni to'liq o'qish","Muallif va manba kelib chiqishini aniqlash","Internetdan qidirish","Do'stlardan so'rash"],a:1,e:"Manbani tekshirishda avvalo muallif va nashr etuvchining malakasi aniqlanadi."},
+  {q:"Quyidagilardan qaysi biri 'fakt' hisoblanadi?",o:["Raqamli ta'lim eng yaxshi usul","O'zbekistonda 2023-yilda 9 yillik ta'lim joriy etildi","Bolalar kitob o'qishni yoqtirmaydi","Masofaviy ta'lim samarasiz"],a:1,e:"Rasmiy hujjat bilan tasdiqlanadigan aniq hodisa — fakt."},
+  {q:"'Shaxsga hujum' mantiqiy xatosi nimani anglatadi?",o:["Fikrga emas, shaxsga hujum qilish","Ko'pchilik fikriga tayanish","Sababni natijaga tenglash","Mavzudan chetlashish"],a:0,e:"Shaxsga hujum — dalilni rad etish o'rniga dalil aytgan shaxsni tanqid qilish."},
+  {q:"YUNESKO hisobotidagi statistikani qanday tekshirish mumkin?",o:["Hisobot betiga qarab","Boshqa tashkilot ma'lumotlari bilan solishtirish","Muallif ismiga ishonish","O'qituvchidan so'rash"],a:1,e:"Statistik ma'lumotni boshqa mustaqil manbalar bilan qiyoslash eng to'g'ri usul."},
+  {q:"Tanqidiy tahlilda 'ishonchlilik' qanday aniqlanadi?",o:["Faqat matn uzunligi","Muallif malakasi, dalillar va havolalar","Faqat nashr sanasi","Faqat veb-sayt dizayni"],a:1,e:"Muallif salohiyati, dalillar puxtaligi va havolalar tizimi — asosiy mezonlar."},
+  {q:"'Barcha o'qituvchilar bu usulni qo'llaydi, demak, bu eng to'g'ri' — bu qaysi xato?",o:["Shaxsga hujum","Ko'pchilikka tayanish","Soxta qarama-qarshilik","Yolg'on ikkilamchi tanlov"],a:1,e:"Ko'pchilik qo'llashi fikrning to'g'ri ekanligini isbotlamaydi — ko'pchilikka tayanish xatosi."},
+  {q:"Ilmiy maqolada 'tengdoshlar tekshiruvi' nima vazifani bajaradi?",o:["Maqolani chiroyli qiladi","Soha mutaxassislari tekshirib sifatini ta'minlaydi","Maqolani tezroq nashr etadi","Muallifga pul to'laydi"],a:1,e:"Tengdoshlar tekshiruvi — ilmiy sifat nazorati tizimi."},
+  {q:"Ikki qarama-qarshi manba uchrasangiz eng to'g'ri yondashuv?",o:["Birinchisiga ishonish","Ikkalasini rad etish","Dalillarni solishtirish","Mavzuni tark etish"],a:2,e:"Dalillarni taqqoslab mustaqil xulosa chiqarish — tanqidiy tahlil asosi."},
+  {q:"'Bog'liqlik sababiy aloqani isbotlamaydi' tamoyili nimani anglatadi?",o:["Bog'liqlik muhim emas","Ikki hodisaning birga yuz berishi birining ikkinchisiga sabab bo'lishini anglatmaydi","Sabab har doim ma'lum","Statistika kerak emas"],a:1,e:"Ikki hodisa orasidagi bog'liqlik sababiy aloqani avtomatik isbotlamaydi."},
+  {q:"Bo'lajak o'qituvchi uchun tanqidiy tahlil nima uchun muhim?",o:["Faqat ilmiy ish uchun","Noto'g'ri ma'lumot bermaslik va o'quvchilarni ham o'rgatish uchun","Faqat imtihon uchun","Faqat kompyuter uchun"],a:1,e:"O'qituvchi ham o'zi to'g'ri ma'lumot berishi, ham tanqidiy fikrlashni o'rgatishi kerak."}
+];
+let dAns=0,dOk=0;
+const diagArea=document.getElementById('diagArea');
+function renderDiag(){
+  dAns=0;dOk=0;diagArea.innerHTML='';document.getElementById('diagScore').innerHTML='';
+  document.getElementById('diagProg').style.width='0%';
+  document.getElementById('diagProgL').textContent='0 / '+diagQ.length;
+  diagQ.forEach((q,i)=>{
+    const d=document.createElement('div');d.className='q-card';d.id='dq'+i;
+    d.innerHTML=`<div class="q-num">[${String(i+1).padStart(2,'0')}]</div><div class="q-text">${q.q}</div>${q.o.map((o,j)=>`<button class="opt" data-qi="${i}" data-oi="${j}">${o}</button>`).join('')}<div class="fb" id="dfb${i}"></div>`;
+    diagArea.appendChild(d);
+  });
+  diagArea.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',handleDiag));
+}
+function handleDiag(e){
+  const b=e.currentTarget,qi=+b.dataset.qi,oi=+b.dataset.oi,q=diagQ[qi],card=document.getElementById('dq'+qi);
+  if(card.dataset.done)return;card.dataset.done='1';dAns++;
+  card.querySelectorAll('.opt').forEach(o=>{o.disabled=true;});
+  if(oi===q.a){b.classList.add('correct');dOk++;showDFb(qi,'ok',"✓ To'g'ri! "+q.e);}
+  else{b.classList.add('wrong');card.querySelectorAll('.opt')[q.a].classList.add('correct');showDFb(qi,'no',"✗ Noto'g'ri. "+q.e);}
+  document.getElementById('diagProg').style.width=(dAns/diagQ.length*100)+'%';
+  document.getElementById('diagProgL').textContent=dAns+' / '+diagQ.length;
+  if(dAns===diagQ.length)showDiagScore();
+}
+function showDFb(i,t,m){const f=document.getElementById('dfb'+i);f.className='fb show '+t;f.textContent=m;}
+function showDiagScore(){
+  const p=Math.round(dOk/diagQ.length*100);
+  let lv,cl;
+  if(p<40){lv='Past daraja';cl='var(--red)';}else if(p<75){lv="O'rta daraja";cl='var(--amber)';}else{lv='Yuqori daraja';cl='var(--green)';}
+  document.getElementById('diagScore').innerHTML=`<div class="score-box" style="margin-top:28px;"><div class="score-big">${dOk}/${diagQ.length}</div><div class="score-label">${p}% to'g'ri javob</div><div class="score-badge" style="background:${cl}20;color:${cl};">${lv}</div><br><button class="btn btn-outline" style="margin-top:18px;" onclick="renderDiag()">Qaytadan</button></div>`;
+  document.getElementById('diagScore').scrollIntoView({behavior:'smooth',block:'center'});
+}
+renderDiag();
+
+// 2. FAKT / FIKR
+const foItems=[
+  {t:"O'zbekistonda 2023-yilda 11 yillik umumiy ta'limga o'tildi.",type:"fact"},
+  {t:"Zamonaviy texnologiyalar ta'lim sifatini har doim yaxshilaydi.",type:"opinion"},
+  {t:"PISA-2022 bo'yicha Singapur o'quvchilari matematikada 1-o'rinni egalladi.",type:"fact"},
+  {t:"Masofaviy ta'lim an'anaviy ta'limdan samarasizroq.",type:"opinion"},
+  {t:"Finlyandiyada bolalar 7 yoshdan maktabga boradi.",type:"fact"},
+  {t:"Kitob o'qish odati hozirgi yoshlarda butunlay yo'qolmoqda.",type:"opinion"},
+  {t:"YUNESKO 2015-yilda «Ta'lim-2030» dasturini qabul qilgan.",type:"fact"},
+  {t:"Boshlang'ich sinf — ta'limning eng muhim bosqichi.",type:"opinion"},
+];
+const ddSource=document.getElementById('ddSource'),factZone=document.getElementById('factZone'),opinionZone=document.getElementById('opinionZone');
+let draggedEl=null;
+function renderFO(){
+  ddSource.querySelectorAll('.dd-item').forEach(e=>e.remove());
+  factZone.querySelectorAll('.dd-item').forEach(e=>e.remove());
+  opinionZone.querySelectorAll('.dd-item').forEach(e=>e.remove());
+  document.getElementById('foResult').innerHTML='';
+  document.getElementById('checkFO').style.display='none';
+  const shuffled=[...foItems].sort(()=>Math.random()-0.5);
+  shuffled.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='dd-item';div.draggable=true;div.dataset.type=item.type;div.dataset.idx=i;
+    div.textContent=item.t;
+    div.addEventListener('dragstart',e=>{draggedEl=div;div.style.opacity='0.5';});
+    div.addEventListener('dragend',()=>{div.style.opacity='1';draggedEl=null;});
+    const mbtn=document.createElement('div');
+    mbtn.style.cssText='display:flex;gap:6px;margin-top:8px;';
+    mbtn.innerHTML=`<button class="btn btn-sm btn-outline" data-mv="fact" style="flex:1;font-size:12px;">→ Fakt</button><button class="btn btn-sm btn-outline" data-mv="opinion" style="flex:1;font-size:12px;">→ Fikr</button>`;
+    mbtn.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click',()=>{
+        const zone=b.dataset.mv==='fact'?factZone:opinionZone;
+        zone.appendChild(div);mbtn.remove();checkAllPlaced();
+      });
+    });
+    div.appendChild(mbtn);
+    ddSource.appendChild(div);
+  });
+}
+[factZone,opinionZone].forEach(zone=>{
+  zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+  zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+  zone.addEventListener('drop',e=>{
+    e.preventDefault();zone.classList.remove('over');
+    if(draggedEl){zone.appendChild(draggedEl);checkAllPlaced();}
+  });
+});
+ddSource.addEventListener('dragover',e=>e.preventDefault());
+ddSource.addEventListener('drop',e=>{e.preventDefault();if(draggedEl)ddSource.appendChild(draggedEl);checkAllPlaced();});
+function checkAllPlaced(){
+  const inSource=ddSource.querySelectorAll('.dd-item').length;
+  document.getElementById('checkFO').style.display=inSource===0?'inline-flex':'none';
+}
+document.getElementById('checkFO').addEventListener('click',()=>{
+  let ok=0;
+  [factZone,opinionZone].forEach(zone=>{
+    const expected=zone===factZone?'fact':'opinion';
+    zone.querySelectorAll('.dd-item').forEach(item=>{
+      if(item.dataset.type===expected){item.classList.add('correct-drop');ok++;}
+      else item.classList.add('wrong-drop');
+      item.draggable=false;item.style.cursor='default';
+    });
+  });
+  const total=foItems.length;
+  document.getElementById('checkFO').style.display='none';
+  document.getElementById('foResult').innerHTML=`<div class="score-box" style="margin-top:24px;"><div class="score-big">${ok}/${total}</div><div class="score-label">${Math.round(ok/total*100)}% to'g'ri joylashtirildi</div><br><button class="btn btn-outline" style="margin-top:14px;" onclick="renderFO()">Qaytadan</button></div>`;
+});
+renderFO();
+
+// 3. MANTIQIY XATO — barcha variantlar o'zbek tilida
+const fallQ=[
+  {quote:"Professor Karimov bu usulni yoqtirmaydi, lekin u yoshligida matematikadan yomon o'qigan.",o:["Shaxsga hujum","Ko'pchilikka tayanish","Yolg'on ikkilamchi tanlov","Fikrni buzib ko'rsatish"],a:0,e:"Dalilga emas, shaxsga hujum qilinmoqda — shaxsga hujum xatosi."},
+  {quote:"Yoki to'liq masofaviy ta'limga o'tamiz, yoki eski usulda qolamiz. Boshqa variant yo'q.",o:["Sirpanish yo'li","Yolg'on ikkilamchi tanlov","Ko'pchilikka tayanish","Mavzudan chalg'itish"],a:1,e:"Faqat ikki variant taqdim etilmoqda — yolg'on ikkilamchi tanlov xatosi."},
+  {quote:"Barcha rivojlangan mamlakatlar bu yondashuvni qo'llamoqda, demak bu to'g'ri.",o:["Fikrni buzib ko'rsatish","Aylanma mantiq","Ko'pchilikka tayanish","Shoshma-shosharlik bilan umumlashtirish"],a:2,e:"Ko'pchilikka murojaat — ko'pchilikka tayanish xatosi."},
+  {quote:"Raqamli darslik kiritilsa → bolalar kitob o'qimaydi → yozuv yo'qoladi → savodsiz bo'ladi.",o:["Yolg'on ikkilamchi tanlov","Shaxsga hujum","Sirpanish yo'li","Fikrni buzib ko'rsatish"],a:2,e:"Bitta o'zgarishdan haddan tashqari oqibatlar zanjiri — sirpanish yo'li xatosi."},
+  {quote:"'Aralash ta'lim yaxshi' deyishadi, lekin aslida ular butunlay an'anaviy darsni yo'q qilmoqchi.",o:["Ko'pchilikka tayanish","Sirpanish yo'li","Mavzudan chalg'itish","Fikrni buzib ko'rsatish"],a:3,e:"Qarshi tomon fikri buzib ko'rsatilmoqda — fikrni buzib ko'rsatish xatosi."},
+  {quote:"Bu usul yaxshi, chunki u zamonaviy. Zamonaviy narsalar har doim yaxshi.",o:["Shaxsga hujum","Aylanma mantiq","Yolg'on ikkilamchi tanlov","Ko'pchilikka tayanish"],a:1,e:"Xulosa o'z-o'ziga asoslanmoqda — aylanma mantiq xatosi."},
+];
+let fAns=0,fOk=0;
+const fallArea=document.getElementById('fallArea');
+function renderFall(){
+  fAns=0;fOk=0;fallArea.innerHTML='';document.getElementById('fallScore').innerHTML='';
+  fallQ.forEach((q,i)=>{
+    const d=document.createElement('div');d.className='q-card';d.id='fq'+i;
+    d.innerHTML=`<div class="q-num">[STSENARIY ${i+1}]</div><div style="font-size:16px;font-style:italic;border-left:3px solid var(--accent2);padding:12px 16px;margin-bottom:16px;background:var(--surface2);border-radius:0 10px 10px 0;line-height:1.6;">"${q.quote}"</div>${q.o.map((o,j)=>`<button class="opt" data-qi="${i}" data-oi="${j}">${o}</button>`).join('')}<div class="fb" id="ffb${i}"></div>`;
+    fallArea.appendChild(d);
+  });
+  fallArea.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',handleFall));
+}
+function handleFall(e){
+  const b=e.currentTarget,qi=+b.dataset.qi,oi=+b.dataset.oi,q=fallQ[qi],card=document.getElementById('fq'+qi);
+  if(card.dataset.done)return;card.dataset.done='1';fAns++;
+  card.querySelectorAll('.opt').forEach(o=>o.disabled=true);
+  if(oi===q.a){b.classList.add('correct');fOk++;const f=document.getElementById('ffb'+qi);f.className='fb show ok';f.textContent="✓ "+q.e;}
+  else{b.classList.add('wrong');card.querySelectorAll('.opt')[q.a].classList.add('correct');const f=document.getElementById('ffb'+qi);f.className='fb show no';f.textContent="✗ "+q.e;}
+  if(fAns===fallQ.length){document.getElementById('fallScore').innerHTML=`<div class="score-box" style="margin-top:24px;"><div class="score-big">${fOk}/${fallQ.length}</div><div class="score-label">Mantiqiy xatolarni aniqlash</div><br><button class="btn btn-outline" style="margin-top:14px;" onclick="renderFall()">Qaytadan</button></div>`;}
+}
+renderFall();
+
+// 4. MANBA ISHONCHLILIGI TESTI — o'zbek tilida
+const craapCrit=[
+  {id:'currency',uz:'Yangilik',desc:'Manba qanchalik yangi?'},
+  {id:'relevance',uz:'Aloqadorlik',desc:'Mavzuga qanchalik mos?'},
+  {id:'authority',uz:'Mualliflik',desc:'Muallif malakali yoki nufuzlimi?'},
+  {id:'accuracy',uz:'Aniqlik',desc:'Dalillar bilan tasdiqlanganmi?'},
+  {id:'purpose',uz:'Maqsad',desc:'Xolis axborot berish maqsadidami?'},
+];
+const craapDiv=document.getElementById('craapSliders');
+craapCrit.forEach(c=>{
+  craapDiv.innerHTML+=`<div class="craap-row"><div class="craap-label">${c.uz}</div><input type="range" min="1" max="5" value="3" class="craap-slider" data-c="${c.id}"><div class="craap-val">3</div></div>`;
+});
+document.querySelectorAll('.craap-slider').forEach(s=>{
+  s.addEventListener('input',()=>{s.nextElementSibling.textContent=s.value;updateCraap();});
+});
+function updateCraap(){
+  let t=0;document.querySelectorAll('.craap-slider').forEach(s=>t+=+s.value);
+  document.getElementById('craapTotal').textContent=t;
+  const m=document.getElementById('craapMeter');m.style.width=(t/25*100)+'%';
+  const v=document.getElementById('craapVerdict');
+  if(t<=10){v.textContent='Past ishonchlilik — manbani ishlatmaslik tavsiya etiladi';v.style.color='var(--red)';m.style.background='var(--red)';}
+  else if(t<=18){v.textContent="O'rtacha — qo'shimcha tekshiruv kerak";v.style.color='var(--amber)';m.style.background='var(--amber)';}
+  else{v.textContent='Yuqori ishonchlilik — manba ishonchli';v.style.color='var(--green)';m.style.background='var(--green)';}
+}
+
+// 5. MANBA QIYOSLASH
+const compareData=[
+  {
+    srcA:{tag:"Ilmiy jurnal",text:"Jonson va Smit (2022) tadqiqotiga ko'ra, aralash ta'lim talabalar o'zlashtirishini 18% oshirgan. Tadqiqot 6 ta universitetda 340 talaba ishtirokida o'tkazilgan."},
+    srcB:{tag:"Shaxsiy blog",text:"Aralash ta'lim haqiqatan ham ajoyib! Men sinab ko'rdim va natija zo'r bo'ldi. Hamma o'qituvchilarga tavsiya qilaman. Kelajak — masofaviy ta'limda! 🚀"},
+    questions:[
+      {q:"Qaysi manbada aniq raqamli dalil bor?",opts:["Manba A","Manba B","Ikkalasida ham"],a:0},
+      {q:"Qaysi manbada hissiy til ustunlik qiladi?",opts:["Manba A","Manba B","Ikkalasida ham"],a:1},
+      {q:"Qaysi manba ilmiy qaror qabul qilish uchun mos?",opts:["Manba A","Manba B","Farqi yo'q"],a:0},
+    ]
+  },
+  {
+    srcA:{tag:"OECD hisoboti",text:"OECD (2021): Uzluksiz ta'limda ishtirok etayotgan kattalar ulushi OECD mamlakatlarida o'rtacha 47%. Skandinaviyada 60% dan yuqori, janubiy Yevropada 30% atrofida."},
+    srcB:{tag:"Telegram kanal",text:"Yevropa ta'lim tizimi inqirozda! Hech kim o'qishni xohlamayapti. Universitetlar yopilyapti. Bu haqda hech kim gapirmayapti!!! ⚠️🔥"},
+    questions:[
+      {q:"Qaysi manbada muallif va tashkilot aniq ko'rsatilgan?",opts:["Manba A","Manba B","Ikkalasida"],a:0},
+      {q:"Qaysi manbada manipulyativ uslub bor?",opts:["Manba A","Manba B","Yo'q"],a:1},
+      {q:"Qaysi manba ishonchliroq?",opts:["Manba A","Manba B","Teng"],a:0},
+    ]
+  }
+];
+const compareArea=document.getElementById('compareArea');
+compareData.forEach((pair,pi)=>{
+  let html=`<h2 style="margin-top:${pi?'36':'0'}px;">Vaziyat ${pi+1}</h2><div class="compare-grid"><div class="src-box"><span class="src-tag a">A</span><div style="font-size:12px;color:var(--accent);margin-bottom:8px;font-weight:600;">${pair.srcA.tag}</div><p style="font-size:14.5px;">${pair.srcA.text}</p></div><div class="src-box"><span class="src-tag b">B</span><div style="font-size:12px;color:var(--accent2);margin-bottom:8px;font-weight:600;">${pair.srcB.tag}</div><p style="font-size:14.5px;">${pair.srcB.text}</p></div></div>`;
+  pair.questions.forEach((q,qi)=>{
+    const uid=`cq${pi}_${qi}`;
+    html+=`<div class="compare-q" id="${uid}"><div style="font-size:14.5px;margin-bottom:10px;">${q.q}</div><div class="compare-opts">${q.opts.map((o,oi)=>`<button class="c-opt" data-uid="${uid}" data-pi="${pi}" data-qi="${qi}" data-oi="${oi}">${o}</button>`).join('')}</div><div class="fb" id="${uid}fb"></div></div>`;
+  });
+  compareArea.innerHTML+=html;
+});
+compareArea.querySelectorAll('.c-opt').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const uid=b.dataset.uid,pi=+b.dataset.pi,qi=+b.dataset.qi,oi=+b.dataset.oi;
+    const card=document.getElementById(uid);
+    if(card.dataset.done)return;card.dataset.done='1';
+    const q=compareData[pi].questions[qi];
+    card.querySelectorAll('.c-opt').forEach(c=>c.style.pointerEvents='none');
+    if(oi===q.a){b.classList.add('right');const f=document.getElementById(uid+'fb');f.className='fb show ok';f.textContent="✓ To'g'ri!";}
+    else{b.classList.add('wrong-a');card.querySelectorAll('.c-opt')[q.a].classList.add('right');const f=document.getElementById(uid+'fb');f.className='fb show no';f.textContent="✗ Noto'g'ri javob.";}
+  });
+});
+
+// 6. DALIL KUCHI
+const argData=[
+  {statement:"Raqamli ta'lim vositalari o'zlashtirishni yaxshilaydi, chunki Xarvard universitetining 2023-yilgi tadqiqoti 500 talaba ishtirokida buni isbotlagan.",correct:5,expl:"Nufuzli manba, katta tanlama, yaqin sana — kuchli dalil."},
+  {statement:"Masofaviy ta'lim yaxshi, chunki men shunday o'ylayman.",correct:1,expl:"Shaxsiy fikr, hech qanday dalil yo'q — eng zaif daraja."},
+  {statement:"YUNESKO kompetensiyaviy yondashuvni tavsiya qiladi, lekin buni qo'llaganlik haqida faqat bitta mamlakatdan ma'lumot bor.",correct:3,expl:"Nufuzli manba, lekin dalil cheklangan (bitta holat) — o'rta kuch."},
+  {statement:"Finlyandiyada PISA natijalari yuqori. Finlyandiyada o'yin asosida ta'lim qo'llaniladi. Demak, o'yin ta'lim yuqori natija beradi.",correct:2,expl:"Bog'liqlik sababiy aloqani isbotlamaydi. Boshqa omillar hisobga olinmagan — zaif dalil."},
+  {statement:"3 ta mustaqil tadqiqot (AQSh, Koreya, Germaniya) aralash ta'limning an'anaviyga nisbatan 15–22% samaraliroq ekanini ko'rsatdi.",correct:5,expl:"Bir nechta mustaqil manba, turli mamlakatlar, aniq raqam — juda kuchli dalil."},
+  {statement:"Professor X shu usulni yoqtiradi, shuning uchun bu usul yaxshi.",correct:1,expl:"Bitta shaxsning yoqtirishi — dalil emas. Obro'ga ko'r-ko'rona ishonish xavfi bor."},
+];
+const argArea=document.getElementById('argArea');
+const userArgVals={};
+argData.forEach((a,i)=>{
+  userArgVals[i]=0;
+  const d=document.createElement('div');d.className='arg-card';d.id='arg'+i;
+  let segs='';
+  for(let s=1;s<=5;s++){segs+=`<div class="str-seg" data-ai="${i}" data-sv="${s}">${s}</div>`;}
+  d.innerHTML=`<div class="arg-statement">${a.statement}</div><div class="str-bar"><div class="str-label">Dalil kuchi:</div><div class="str-track">${segs}</div></div>`;
+  argArea.appendChild(d);
+});
+argArea.querySelectorAll('.str-seg').forEach(seg=>{
+  seg.addEventListener('click',()=>{
+    const ai=+seg.dataset.ai,sv=+seg.dataset.sv;
+    userArgVals[ai]=sv;
+    const card=document.getElementById('arg'+ai);
+    card.querySelectorAll('.str-seg').forEach(s=>{
+      const v=+s.dataset.sv;
+      s.className='str-seg'+(v<=sv?' filled s'+v:'');
+    });
+  });
+});
+document.getElementById('checkArg').addEventListener('click',()=>{
+  let ok=0;
+  argData.forEach((a,i)=>{
+    const uv=userArgVals[i],diff=Math.abs(uv-a.correct);
+    const card=document.getElementById('arg'+i);
+    let fb=card.querySelector('.fb');
+    if(!fb){fb=document.createElement('div');fb.className='fb';card.appendChild(fb);}
+    if(diff<=1&&uv>0){ok++;fb.className='fb show ok';fb.textContent=`✓ Siz: ${uv}, To'g'ri: ${a.correct}. ${a.expl}`;}
+    else{fb.className='fb show no';fb.textContent=`✗ Siz: ${uv||'—'}, To'g'ri: ${a.correct}. ${a.expl}`;}
+  });
+  document.getElementById('argResult').innerHTML=`<div class="score-box" style="margin-top:20px;"><div class="score-big">${ok}/${argData.length}</div><div class="score-label">To'g'ri yoki yaqin (±1) baholangan</div></div>`;
+  document.getElementById('checkArg').style.display='none';
+});
+
+// 7. MEDIA VIKTORINA
+const mediaData=[
+  {name:"Ta'lim Yangiliklari",handle:"@talim_news",avatar:"TY",text:"TOSHKENT — O'zbekiston Prezidenti yangi farmon imzoladi: 2024-yildan barcha maktablarda raqamli darsliklar joriy etiladi. Vazirlik rasmiy sayti orqali e'lon qilindi.",real:true,expl:"Rasmiy manba (vazirlik sayti) va aniq sana/hujjat ko'rsatilgan — haqiqiy xabar belgilari."},
+  {name:"Ziyrak Pedagog",handle:"@ziyrak_ped",avatar:"ZP",text:"SHOSHILINCH! Hukumat barcha o'qituvchilarning maoshini 5 baravar oshirmoqchi! Lekin buni hech kim bilmaydi! Tarqating, hamma bilsin!!! 🔥🔥🔥",real:false,expl:"Hissiy til, manba ko'rsatilmagan, 'hech kim bilmaydi' manipulyatsiyasi, haddan tashqari undov — soxta xabar belgilari."},
+  {name:"Ta'lim Statistikasi",handle:"@edustat_uz",avatar:"TS",text:"OECD ma'lumotlari bo'yicha 2023-yilda Markaziy Osiyoda ta'limga sarflanadigan YaIMdagi ulush o'rtacha 4.2% ni tashkil etdi. Bu ko'rsatkich dunyo o'rtachasidan (4.7%) past. Manba: OECD Ta'lim ko'rsatkichlari 2023.",real:true,expl:"Aniq raqam, nufuzli manba va havola — ishonchli ma'lumot belgilari."},
+  {name:"MEGA XABAR",handle:"@mega_news_uz",avatar:"MX",text:"Ilmiy tadqiqot isbotladi: telefon ishlatadigan bolalarning miyasi 40% kichrayadi!!! Farzandingizni qutqaring! Buni o'qigan har bir ota-ona ulashsin!!! ⚠️📱",real:false,expl:"Aniq manba yo'q, mubolag'ali raqam, qo'rquvga asoslangan manipulyatsiya, 'ulashing' bosimi — soxta."},
+  {name:"Pedagog Forum",handle:"@pedagog_forum",avatar:"PF",text:"Viloyat ta'lim boshqarmasi 15-martda o'tkazilgan seminar haqida: 120 nafar boshlang'ich sinf o'qituvchisi kompetensiyaviy yondashuv bo'yicha malaka oshirdi. Seminar xalqaro loyiha doirasida tashkil etildi.",real:true,expl:"Aniq sana, joy, tashkilot va raqamlar — haqiqiy xabar belgilari."},
+  {name:"Fenomen UZ",handle:"@fenomen_uz",avatar:"FU",text:"Ta'lim tizimi to'liq barbod bo'ldi! Hech bir islohot ishlamayapti! Buni ko'rgan professor HAYRATDAN QOTDI! Videoni oxirigacha ko'ring ➡️",real:false,expl:"E'tiborni tortish uchun sarlavha, 'professor hayratdan qotdi' manipulyatsiyasi, hissiy mubolag'a, manba yo'q — soxta."},
+];
+const mediaArea=document.getElementById('mediaArea');
+let mAns=0,mOk=0;
+mediaData.forEach((m,i)=>{
+  const d=document.createElement('div');d.className='media-card';d.id='mc'+i;
+  d.innerHTML=`<div class="media-header"><div class="media-avatar">${m.avatar}</div><div><div class="media-name">${m.name}</div><div class="media-handle">${m.handle}</div></div></div><div class="media-body">${m.text}</div><div class="media-btns"><button class="m-btn" data-mi="${i}" data-pick="true">✓ Haqiqiy</button><button class="m-btn" data-mi="${i}" data-pick="false">✗ Soxta</button></div><div class="fb" id="mfb${i}"></div>`;
+  mediaArea.appendChild(d);
+});
+mediaArea.querySelectorAll('.m-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const mi=+b.dataset.mi,pick=b.dataset.pick==='true',m=mediaData[mi],card=document.getElementById('mc'+mi);
+    if(card.dataset.done)return;card.dataset.done='1';mAns++;
+    card.querySelectorAll('.m-btn').forEach(x=>x.style.pointerEvents='none');
+    if(pick===m.real){b.classList.add('correct-m');mOk++;const f=document.getElementById('mfb'+mi);f.className='fb show ok';f.textContent="✓ "+m.expl;}
+    else{b.classList.add('wrong-m');const other=card.querySelector(`.m-btn[data-pick="${m.real}"]`);other.classList.add('correct-m');const f=document.getElementById('mfb'+mi);f.className='fb show no';f.textContent="✗ "+m.expl;}
+    if(mAns===mediaData.length){document.getElementById('mediaScore').innerHTML=`<div class="score-box" style="margin-top:24px;"><div class="score-big">${mOk}/${mediaData.length}</div><div class="score-label">Media savodxonlik darajasi</div><br><button class="btn btn-outline" style="margin-top:14px;" onclick="location.reload()">Hammasini qaytadan</button></div>`;}
+  });
+});
+
+// PRO: persistent dashboard, theme and reset
+const proState=JSON.parse(localStorage.getItem('critical-pro-state')||'{"done":{},"scores":{}}');
+function savePro(){localStorage.setItem('critical-pro-state',JSON.stringify(proState));renderProDashboard();}
+function markDone(key,score){proState.done[key]=true;if(typeof score==='number')proState.scores[key]=score;savePro();}
+function renderProDashboard(){
+ const done=Object.keys(proState.done).length;const vals=Object.values(proState.scores);
+ const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+ const dc=document.getElementById('doneCount'),as=document.getElementById('avgScore');if(dc)dc.textContent=done+'/7';if(as)as.textContent=avg+'%';
+}
+const sTheme=localStorage.getItem('critical-theme');if(sTheme==='dark'){document.documentElement.classList.add('dark');document.getElementById('svcTheme').textContent='☀'}
+document.getElementById('svcTheme').onclick=()=>{document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');localStorage.setItem('critical-theme',d?'dark':'light');document.getElementById('svcTheme').textContent=d?'☀':'☾'};
+document.getElementById('resetProgress').onclick=()=>{if(confirm("Barcha saqlangan natijalar o'chirilsinmi?")){localStorage.removeItem('critical-pro-state');location.reload()}};
+// Observe completed result blocks without changing the original exercises
+const proObserver=new MutationObserver(()=>{
+ const scoreText=(id)=>document.getElementById(id)?.innerText||'';
+ if(scoreText('diagScore')){const m=scoreText('diagScore').match(/(\d+)\s*%/);markDone('diag',m?+m[1]:70)}
+ if(scoreText('foResult'))markDone('factop',80);
+ if(scoreText('fallScore')){const m=scoreText('fallScore').match(/(\d+)\s*\/\s*(\d+)/);markDone('fallacy',m?Math.round(+m[1]/+m[2]*100):70)}
+ if(document.getElementById('craapSrc')?.value.trim())markDone('craap',Math.round((+document.getElementById('craapTotal').textContent||15)/25*100));
+ if(document.querySelector('#compareArea .fb.show'))markDone('compare',75);
+ if(scoreText('argResult')){const m=scoreText('argResult').match(/(\d+)\s*\/\s*(\d+)/);markDone('argmap',m?Math.round(+m[1]/+m[2]*100):70)}
+ if(scoreText('mediaScore')){const m=scoreText('mediaScore').match(/(\d+)\s*\/\s*(\d+)/);markDone('media',m?Math.round(+m[1]/+m[2]*100):70)}
+});
+proObserver.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true});
+renderProDashboard();
+</script>
+</body>
+</html>
